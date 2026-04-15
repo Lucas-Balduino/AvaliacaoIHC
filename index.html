@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Dashboard de análise do mercado de Trabalho Doméstico Informal no Brasil. Projeto Integrador I – UniCEUB." />
+  <title>Dashboard – Trabalho Doméstico Informal | Projeto Integrador I – UniCEUB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─────────────────────────────────────────────
+       TOKENS & RESET
+    ───────────────────────────────────────────── */
+    :root {
+      --sidebar-bg:     #0f1d2e;
+      --sidebar-w:      210px;
+      --blue-dark:      #1a3c6e;
+      --blue-mid:       #1a5fa8;
+      --blue-light:     #b8cee8;
+      --blue-pale:      #dce8f5;
+      --bg-page:        #f0f4f8;
+      --bg-card:        #ffffff;
+      --text-primary:   #0d1f36;
+      --text-secondary: #5a738a;
+      --text-muted:     #8ea8bf;
+      --accent-pink:    #e0186b;
+      --border:         #dde6ef;
+      --card-radius:    14px;
+      --shadow:         0 2px 12px rgba(10, 40, 80, .08);
+      --focus-ring:     0 0 0 3px #1a5fa8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ─────────────────────────────────────────────
+       ACESSIBILIDADE: Skip Link
+       Prática: permite usuários de teclado pular navegação
+    ───────────────────────────────────────────── */
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 8px;
+      background: var(--blue-mid);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-weight: 600;
+      text-decoration: none;
+      z-index: 9999;
+      transition: top .2s;
+    }
+    .skip-link:focus { top: 8px; }
+
+    /* ─────────────────────────────────────────────
+       ACESSIBILIDADE: Conteúdo visualmente oculto
+       mas acessível a leitores de tela (sr-only)
+    ───────────────────────────────────────────── */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ─────────────────────────────────────────────
+       ACESSIBILIDADE: Foco visível (WCAG 2.4.7)
+    ───────────────────────────────────────────── */
+    :focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    /* ─────────────────────────────────────────────
+       LAYOUT PRINCIPAL
+    ───────────────────────────────────────────── */
+    .layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      min-height: 100vh;
+    }
+
+    /* ─────────────────────────────────────────────
+       SIDEBAR (aside)
+       HTML Semântico: <aside> com aria-label
+    ───────────────────────────────────────────── */
+    .sidebar {
+      background: var(--sidebar-bg);
+      color: #cbd8e4;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .project-title {
+      font-weight: 700;
+      font-size: 13px;
+      color: #fff;
+      letter-spacing: .02em;
+    }
+    .project-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ─────────────────────────────────────────────
+       ACESSIBILIDADE: Nav com <ul> semântica
+       HTML Semântico: <nav> com aria-label, <ul>, <li>, <a>
+    ───────────────────────────────────────────── */
+    .sidebar-nav {
+      padding: 16px 0;
+    }
+    .sidebar-nav ul {
+      list-style: none;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      color: #9db8cc;
+      text-decoration: none;
+      font-size: 13px;
+      border-left: 3px solid transparent;
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .nav-item:hover {
+      background: rgba(255,255,255,.06);
+      color: #fff;
+    }
+    .nav-item[aria-current="page"] {
+      color: #fff;
+      background: rgba(26, 95, 168, .35);
+      border-left-color: var(--blue-mid);
+      font-weight: 600;
+    }
+    .nav-icon { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* ─────────────────────────────────────────────
+       ACESSIBILIDADE: Filtros com <label> + <input>
+       Prática 5: Formulários Inclusivos
+    ───────────────────────────────────────────── */
+    .filters-section {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .filters-heading {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .filters-fieldset {
+      border: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    /* label envolve o input: aumenta área de clique (Prática 5) */
+    .filter-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      color: #9db8cc;
+      padding: 4px 0;
+    }
+    .filter-label:hover { color: #fff; }
+    .filter-label input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid currentColor;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .filter-label input[type="checkbox"]:checked { background: currentColor; }
+    .filter-label.ibge input { color: #4a9fd4; }
+    .filter-label.local input { color: #a070c8; }
+
+    /* ─────────────────────────────────────────────
+       SIDEBAR FOOTER: Logo + Botões
+    ───────────────────────────────────────────── */
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 20px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+
+    /* CEUB Logo (texto) */
+    .ceub-logo {
+      width: 100px;
+    }
+
+    /* ─────────────────────────────────────────────
+       ACESSIBILIDADE: Botões nativos (<button>)
+       Prática: Substituição de divs por <button>
+    ───────────────────────────────────────────── */
+    .btn-sidebar {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #9db8cc;
+      padding: 6px 0;
+      text-align: left;
+      transition: color .15s;
+    }
+    .btn-sidebar:hover { color: #fff; }
+
+    .btn-export {
+      width: 100%;
+      background: var(--blue-mid);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background .15s;
+    }
+    .btn-export:hover { background: var(--blue-dark); }
+
+    /* ─────────────────────────────────────────────
+       ÁREA PRINCIPAL
+       HTML Semântico: <main> com id e aria-labelledby
+    ───────────────────────────────────────────── */
+    .main-content {
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .dashboard-header { margin-bottom: 4px; }
+    .dashboard-category {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--blue-mid);
+      font-weight: 600;
+    }
+    /* ─── H1: único por página (Prática 1) ─── */
+    .dashboard-header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-top: 4px;
+      line-height: 1.2;
+    }
+
+    /* ─────────────────────────────────────────────
+       CARDS (seções)
+    ───────────────────────────────────────────── */
+    .dashboard-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 20px;
+    }
+    .dashboard-row--equal {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--card-radius);
+      padding: 22px 24px;
+      box-shadow: var(--shadow);
+    }
+    .card--wide { grid-column: 1; }
+    .card--narrow { min-width: 260px; max-width: 300px; }
+    .card--full { width: 100%; }
+
+    .card-header { margin-bottom: 18px; position: relative; }
+    .card-category {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--blue-mid);
+      font-weight: 700;
+    }
+    /* ─── H2: seções principais (Prática 1) ─── */
+    .card-header h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-top: 3px;
+    }
+
+    /* ─────────────────────────────────────────────
+       ACESSIBILIDADE: Botão de info como <button>
+    ───────────────────────────────────────────── */
+    .btn-info {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 16px;
+      padding: 4px;
+      line-height: 1;
+      border-radius: 50%;
+    }
+    .btn-info:hover { color: var(--blue-mid); }
+
+    /* ─────────────────────────────────────────────
+       GRÁFICOS DE ROSCA (donut charts)
+       Acessibilidade: <figure>, <svg role="img">,
+       <title> e tabela como alternativa textual
+    ───────────────────────────────────────────── */
+    .charts-row {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      justify-content: space-around;
+    }
+    .donut-figure {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+    .donut-svg { width: 130px; height: 130px; }
+    .donut-value {
+      font-size: 22px;
+      font-weight: 800;
+      fill: var(--blue-mid);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .donut-label-text {
+      font-size: 9px;
+      fill: var(--text-muted);
+      font-family: 'Segoe UI', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .donut-figure figcaption {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-secondary);
+      max-width: 140px;
+      line-height: 1.4;
+    }
+
+    /* ─────────────────────────────────────────────
+       STATUS MEI
+    ───────────────────────────────────────────── */
+    .mei-figure {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .mei-svg { width: 110px; height: 110px; flex-shrink: 0; }
+
+    /* ─────────────────────────────────────────────
+       ACESSIBILIDADE: Tabela de dados estruturada
+       Prática 2 / Padrão eMAG: tabela para dados tabulares
+    ───────────────────────────────────────────── */
+    .mei-table {
+      border-collapse: collapse;
+      font-size: 12px;
+      width: 100%;
+    }
+    .mei-table th,
+    .mei-table td {
+      padding: 5px 8px;
+      text-align: left;
+    }
+    .mei-table th {
+      color: var(--text-muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+    }
+    .mei-table td { color: var(--text-primary); }
+    .mei-table td:last-child { font-weight: 700; text-align: right; }
+    .legend-dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 2px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    /* ─────────────────────────────────────────────
+       QUALIDADE DO TRABALHO
+    ───────────────────────────────────────────── */
+    .quality-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+    /* ─── H3: subseção (Prática 1) ─── */
+    .metric-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .metric-dl { display: flex; flex-direction: column; gap: 12px; }
+    .metric-item { display: flex; flex-direction: column; gap: 4px; }
+    .metric-item dt {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .metric-item dd { display: flex; flex-direction: column; gap: 4px; }
+    .metric-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .bar-track {
+      height: 6px;
+      background: var(--blue-pale);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 99px;
+    }
+    .bar-fill--formal   { background: var(--blue-light); }
+    .bar-fill--informal { background: var(--blue-mid); }
+
+    /* ─────────────────────────────────────────────
+       PREOCUPAÇÕES
+       ACESSIBILIDADE: Word cloud substituída por <ul>
+       semântica (Prática: HTML Semântico)
+    ───────────────────────────────────────────── */
+    .concerns-list {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      align-items: center;
+    }
+    .concerns-list li {
+      font-weight: 800;
+      letter-spacing: .02em;
+      color: var(--blue-dark);
+      line-height: 1.3;
+    }
+    .concern--xl  { font-size: 22px; }
+    .concern--lg  { font-size: 17px; }
+    .concern--md  { font-size: 14px; color: var(--text-secondary); }
+    .concern--sm  { font-size: 11px; color: var(--text-muted); }
+    .concern--accent { color: var(--blue-mid); }
+
+    /* ─────────────────────────────────────────────
+       CANAL DE AQUISIÇÃO
+    ───────────────────────────────────────────── */
+    .canal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 32px;
+      align-items: start;
+    }
+    .canal-text p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-top: 6px;
+    }
+    .canal-stats {
+      display: flex;
+      gap: 28px;
+      margin-top: 20px;
+    }
+    .canal-stats > div { display: flex; flex-direction: column; }
+    .canal-stats dt {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .canal-stats dd {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--blue-mid);
+      margin-top: 2px;
+    }
+    .canal-chart-svg { width: 100%; height: 160px; }
+    .chart-axis-label {
+      font-size: 9px;
+      fill: var(--text-muted);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .chart-bar-label {
+      font-size: 10px;
+      fill: var(--text-secondary);
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* ─────────────────────────────────────────────
+       RODAPÉ
+       HTML Semântico: <footer>
+    ───────────────────────────────────────────── */
+    .dashboard-footer {
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .dashboard-footer p {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* ─────────────────────────────────────────────
+       RESPONSIVIDADE BÁSICA
+    ───────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar {
+        position: static;
+        height: auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 12px 16px;
+      }
+      .sidebar-nav ul { display: flex; flex-wrap: wrap; }
+      .dashboard-row,
+      .dashboard-row--equal,
+      .canal-grid,
+      .quality-metrics { grid-template-columns: 1fr; }
+      .card--narrow { max-width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!--
+    ══════════════════════════════════════════════
+    ACESSIBILIDADE: Skip Link (WCAG 2.4.1)
+    Permite usuários de teclado pular navegação
+    ══════════════════════════════════════════════
+  -->
+  <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo principal</a>
+
+  <div class="layout">
+
+    <!-- ══════════════════════════════════════════
+         SIDEBAR
+         HTML Semântico: <aside> identifica região
+         complementar ao conteúdo principal
+    ═══════════════════════════════════════════ -->
+    <aside class="sidebar" aria-label="Painel lateral de navegação e filtros">
+
+      <header class="sidebar-header">
+        <p class="project-title">Projeto Integrador I</p>
+        <p class="project-subtitle">Dashboard Protótipo v1.0</p>
+      </header>
+
+      <!--
+        HTML Semântico: <nav> com aria-label único
+        <ul> + <li> + <a> para estrutura de lista de navegação
+      -->
+      <nav class="sidebar-nav" aria-label="Menu principal do dashboard">
+        <ul role="list">
+          <li>
+            <a href="#conteudo-principal" class="nav-item" aria-current="page">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="#diaristas" class="nav-item">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              Diaristas
+            </a>
+          </li>
+          <li>
+            <a href="#contratantes" class="nav-item">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="3"/><circle cx="16" cy="9" r="2"/><path d="M2 20c0-3 3-5 7-5s7 2 7 5"/><path d="M18 14c2 0 4 1.3 4 4"/></svg>
+              Contratantes
+            </a>
+          </li>
+          <li>
+            <a href="#fontes" class="nav-item">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="17" width="18" height="4" rx="1"/></svg>
+              Fontes de Dados
+            </a>
+          </li>
+          <li>
+            <a href="#pesquisa" class="nav-item">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+              Pesquisa Local
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!--
+        ACESSIBILIDADE — Prática 5: Formulários Inclusivos
+        <fieldset> agrupa filtros relacionados
+        <legend> descreve o grupo para leitores de tela
+        <label> envolve o <input> — aumenta área de clique
+        e associa o texto descritivo ao campo
+      -->
+      <section class="filters-section" aria-labelledby="filtros-titulo">
+        <h2 id="filtros-titulo" class="filters-heading sr-only">Filtros de Dados</h2>
+        <p class="filters-heading" aria-hidden="true">Filtros de Dados</p>
+
+        <fieldset class="filters-fieldset">
+          <legend class="sr-only">Selecionar fontes de dados a exibir</legend>
+
+          <label class="filter-label ibge">
+            <input type="checkbox" name="filtro-ibge" checked aria-describedby="desc-ibge" />
+            IBGE/IPEA
+          </label>
+          <span id="desc-ibge" class="sr-only">Dados da Pesquisa Nacional por Amostra de Domicílios (PNAD) do IBGE e do IPEA</span>
+
+          <label class="filter-label local">
+            <input type="checkbox" name="filtro-local" aria-describedby="desc-local" />
+            Local Research
+          </label>
+          <span id="desc-local" class="sr-only">Dados da pesquisa de campo realizada pelo grupo</span>
+        </fieldset>
+      </section>
+
+      <div class="sidebar-footer">
+        <!-- Logo CEUB acessível em imagem) -->
+        <div class="ceub-logo" role="img" aria-label="CEUB – Centro Universitário de Brasília">
+          <img src="https://institucional.uniceub.br/hubfs/BrandCenter/img/logo-ceub-colorida-02.png" alt="Logo institucional UniCEUB" class="ceub-logo">
+        </div>
+
+        <!--
+          ACESSIBILIDADE: <button> nativo com aria-pressed
+          para o toggle de tema (estado declarado ao leitor de tela)
+        -->
+        <button
+          type="button"
+          class="btn-sidebar"
+          aria-pressed="false"
+          aria-label="Alternar entre tema claro e escuro"
+          onclick="this.setAttribute('aria-pressed', this.getAttribute('aria-pressed')==='false' ? 'true' : 'false')"
+        >
+          <svg width="14" height="14" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          Theme Toggle
+        </button>
+
+        <!--
+          ACESSIBILIDADE: <button> nativo — substitui <div> estilizado
+          Prática: Fake Button → <button> semântico
+        -->
+        <button type="button" class="btn-export">
+          <svg width="13" height="13" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+          Export Report
+        </button>
+      </div>
+
+    </aside><!-- /aside.sidebar -->
+
+
+    <!-- ══════════════════════════════════════════
+         CONTEÚDO PRINCIPAL
+         HTML Semântico: <main> com id para skip link
+         e aria-labelledby vinculado ao <h1>
+    ═══════════════════════════════════════════ -->
+    <main id="conteudo-principal" class="main-content" aria-labelledby="titulo-dashboard">
+
+      <!-- Cabeçalho do dashboard -->
+      <header class="dashboard-header">
+        <p class="dashboard-category">Trabalho Doméstico Informal</p>
+        <!--
+          ACESSIBILIDADE — Prática 1: H1 único por página.
+          Define o propósito central do documento.
+        -->
+        <h1 id="titulo-dashboard">Projeto Integrador I – UniCEUB</h1>
+      </header>
+
+
+      <!-- ─────────── LINHA 1: Informalidade + MEI ─────────── -->
+      <div class="dashboard-row">
+
+        <!-- ══ SEÇÃO: Taxa de Informalidade ══ -->
+        <section class="card card--wide" aria-labelledby="h2-informalidade">
+          <header class="card-header">
+            <p class="card-category">Contexto de Mercado</p>
+            <!--
+              ACESSIBILIDADE — Prática 1: H2 para seção principal
+            -->
+            <h2 id="h2-informalidade">Taxa de Informalidade</h2>
+
+            <!--
+              ACESSIBILIDADE: ícone ⓘ como <button> nativo com aria-label
+              Não é um <div> decorativo — é interativo
+            -->
+            <button
+              type="button"
+              class="btn-info"
+              aria-label="Mais informações sobre Taxa de Informalidade"
+            >
+              <svg width="16" height="16" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </button>
+          </header>
+
+          <!--
+            ACESSIBILIDADE — Prática 4: Gráficos com alternativa textual
+            <figure> + SVG com role="img" e <title> interno
+            Tabela oculta visualmente fornece dados estruturados
+          -->
+          <div class="charts-row">
+
+            <!-- Gráfico 1: 31,5% Geral -->
+            <figure class="donut-figure">
+              <svg
+                class="donut-svg"
+                viewBox="0 0 120 120"
+                role="img"
+                aria-labelledby="titulo-donut-geral"
+              >
+                <title id="titulo-donut-geral">
+                  Gráfico de rosca: 31,5% da força de trabalho nacional está em regime informal.
+                </title>
+                <!-- Trilha (fundo) -->
+                <circle cx="60" cy="60" r="45" fill="none" stroke="#dce8f5" stroke-width="13"/>
+                <!-- Progresso: C=282.74, 31.5% → 89.06 -->
+                <circle
+                  cx="60" cy="60" r="45"
+                  fill="none"
+                  stroke="#1a5fa8"
+                  stroke-width="13"
+                  stroke-dasharray="89.06 193.68"
+                  stroke-linecap="round"
+                  transform="rotate(-90 60 60)"
+                />
+                <text x="60" y="58" text-anchor="middle" class="donut-value">31.5%</text>
+                <text x="60" y="72" text-anchor="middle" class="donut-label-text">GERAL</text>
+              </svg>
+
+              <figcaption>
+                Representação da força de trabalho nacional em regimes informais.
+              </figcaption>
+
+              <!-- Tabela de dados: acessível via sr-only -->
+              <table class="sr-only">
+                <caption>Taxa de informalidade geral no mercado de trabalho nacional</caption>
+                <thead><tr><th scope="col">Regime</th><th scope="col">Percentual</th></tr></thead>
+                <tbody>
+                  <tr><td>Informal</td><td>31,5%</td></tr>
+                  <tr><td>Formal</td><td>68,5%</td></tr>
+                </tbody>
+              </table>
+            </figure>
+
+            <!-- Gráfico 2: 75% Doméstico -->
+            <figure class="donut-figure">
+              <svg
+                class="donut-svg"
+                viewBox="0 0 120 120"
+                role="img"
+                aria-labelledby="titulo-donut-domestico"
+              >
+                <title id="titulo-donut-domestico">
+                  Gráfico de rosca: 75% dos trabalhadores domésticos estão em regime informal.
+                </title>
+                <circle cx="60" cy="60" r="45" fill="none" stroke="#dce8f5" stroke-width="13"/>
+                <!-- 75% → 212.06 -->
+                <circle
+                  cx="60" cy="60" r="45"
+                  fill="none"
+                  stroke="#1a5fa8"
+                  stroke-width="13"
+                  stroke-dasharray="212.06 70.68"
+                  stroke-linecap="round"
+                  transform="rotate(-90 60 60)"
+                />
+                <text x="60" y="58" text-anchor="middle" class="donut-value">75%</text>
+                <text x="60" y="72" text-anchor="middle" class="donut-label-text">DOMÉSTICO</text>
+              </svg>
+
+              <figcaption>
+                A informalidade atinge níveis críticos no setor de trabalho doméstico.
+              </figcaption>
+
+              <table class="sr-only">
+                <caption>Taxa de informalidade no setor de trabalho doméstico</caption>
+                <thead><tr><th scope="col">Regime</th><th scope="col">Percentual</th></tr></thead>
+                <tbody>
+                  <tr><td>Informal</td><td>75%</td></tr>
+                  <tr><td>Formal</td><td>25%</td></tr>
+                </tbody>
+              </table>
+            </figure>
+
+          </div><!-- /charts-row -->
+        </section><!-- /Taxa de Informalidade -->
+
+
+        <!-- ══ SEÇÃO: Status MEI ══ -->
+        <section class="card card--narrow" aria-labelledby="h2-mei">
+          <header class="card-header">
+            <p class="card-category">Status Legal</p>
+            <h2 id="h2-mei">Status MEI</h2>
+          </header>
+
+          <!--
+            ACESSIBILIDADE — Prática 2 + 4:
+            Gráfico com SVG acessível (role="img", <title>)
+            Legenda como tabela de dados estruturados
+            Pontos de cor com aria-hidden (cor não é o único identificador)
+          -->
+          <figure class="mei-figure" aria-labelledby="titulo-mei-chart">
+            <svg
+              class="mei-svg"
+              viewBox="0 0 120 120"
+              role="img"
+              aria-labelledby="titulo-mei-chart"
+            >
+              <title id="titulo-mei-chart">
+                Gráfico de rosca: Status MEI — 62% não possui, 28% possui, 10% já teve.
+              </title>
+              <!-- Trilha -->
+              <circle cx="60" cy="60" r="42" fill="none" stroke="#f0f4f8" stroke-width="16"/>
+              <!-- Segmento 1 – Não Possui 62%: 264.5*0.62=163.99 -->
+              <circle
+                cx="60" cy="60" r="42"
+                fill="none" stroke="#1a3c6e" stroke-width="16"
+                stroke-dasharray="163.99 99.90"
+                stroke-dashoffset="0"
+                transform="rotate(-90 60 60)"
+              />
+              <!-- Segmento 2 – Possui 28%: 264.5*0.28=74.06 -->
+              <circle
+                cx="60" cy="60" r="42"
+                fill="none" stroke="#b8cee8" stroke-width="16"
+                stroke-dasharray="74.06 189.83"
+                stroke-dashoffset="-163.99"
+                transform="rotate(-90 60 60)"
+              />
+              <!-- Segmento 3 – Já Teve 10%: 264.5*0.10=26.45 -->
+              <circle
+                cx="60" cy="60" r="42"
+                fill="none" stroke="#dce8f5" stroke-width="16"
+                stroke-dasharray="26.45 237.44"
+                stroke-dashoffset="-238.05"
+                transform="rotate(-90 60 60)"
+              />
+            </svg>
+
+            <figcaption>
+              <!--
+                ACESSIBILIDADE — Prática 2: <table> para dados tabulares
+                Cabeçalhos com <th scope="col"> identificam colunas
+              -->
+              <table class="mei-table" aria-label="Distribuição do Status MEI entre os trabalhadores pesquisados">
+                <caption class="sr-only">
+                  Status MEI: parcela dos trabalhadores domésticos informais que possuem, não possuem ou já possuíram registro como Microempreendedor Individual.
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Status</th>
+                    <th scope="col">%</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <!--
+                      ACESSIBILIDADE: aria-hidden nos quadrados de cor.
+                      A informação é transmitida pelo texto, não só pela cor.
+                    -->
+                    <td>
+                      <span class="legend-dot" style="background:#1a3c6e" aria-hidden="true"></span>
+                      Não Possui
+                    </td>
+                    <td>62%</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="legend-dot" style="background:#b8cee8" aria-hidden="true"></span>
+                      Possui
+                    </td>
+                    <td>28%</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="legend-dot" style="background:#dce8f5;border:1px solid #b8cee8" aria-hidden="true"></span>
+                      Já Teve
+                    </td>
+                    <td>10%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </figcaption>
+          </figure>
+        </section><!-- /Status MEI -->
+
+      </div><!-- /Linha 1 -->
+
+
+      <!-- ─────────── LINHA 2: Qualidade + Preocupações ─────────── -->
+      <div class="dashboard-row dashboard-row--equal">
+
+        <!-- ══ SEÇÃO: Qualidade do Trabalho ══ -->
+        <section class="card" aria-labelledby="h2-qualidade">
+          <header class="card-header">
+            <p class="card-category">Análise Comparativa</p>
+            <h2 id="h2-qualidade">Qualidade do Trabalho</h2>
+          </header>
+
+          <div class="quality-metrics">
+
+            <!-- Horas Semanais -->
+            <div>
+              <!--
+                ACESSIBILIDADE — Prática 1: H3 para subseção
+                dentro da seção H2 "Qualidade do Trabalho"
+              -->
+              <h3 class="metric-title">
+                <svg width="14" height="14" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Horas Semanais
+              </h3>
+              <!--
+                HTML Semântico: <dl> para pares descrição/valor
+                <dt> = termo (Formal/Informal), <dd> = dado
+              -->
+              <dl class="metric-dl">
+                <div class="metric-item">
+                  <dt>Formal</dt>
+                  <dd>
+                    <span class="metric-value">30h/semana</span>
+                    <!--
+                      ACESSIBILIDADE: aria-label descreve a barra
+                      para leitores de tela (não é apenas visual)
+                    -->
+                    <div
+                      class="bar-track"
+                      role="img"
+                      aria-label="Barra proporcional: trabalho formal representa 30 horas semanais, menor que o informal"
+                    >
+                      <div class="bar-fill bar-fill--formal" style="width:55%"></div>
+                    </div>
+                  </dd>
+                </div>
+                <div class="metric-item">
+                  <dt>Informal</dt>
+                  <dd>
+                    <span class="metric-value">40h/semana</span>
+                    <div
+                      class="bar-track"
+                      role="img"
+                      aria-label="Barra proporcional: trabalho informal representa 40 horas semanais, maior que o formal"
+                    >
+                      <div class="bar-fill bar-fill--informal" style="width:75%"></div>
+                    </div>
+                  </dd>
+                </div>
+              </dl>
+            </div>
+
+            <!-- Salário Mensal -->
+            <div>
+              <h3 class="metric-title">
+                <svg width="14" height="14" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                Salário Mensal
+              </h3>
+              <dl class="metric-dl">
+                <div class="metric-item">
+                  <dt>Formal</dt>
+                  <dd>
+                    <span class="metric-value">R$ 2.450</span>
+                    <div
+                      class="bar-track"
+                      role="img"
+                      aria-label="Barra proporcional: salário formal de R$ 2.450, maior que o informal"
+                    >
+                      <div class="bar-fill bar-fill--formal" style="width:80%"></div>
+                    </div>
+                  </dd>
+                </div>
+                <div class="metric-item">
+                  <dt>Informal</dt>
+                  <dd>
+                    <span class="metric-value">R$ 1.120</span>
+                    <div
+                      class="bar-track"
+                      role="img"
+                      aria-label="Barra proporcional: salário informal de R$ 1.120, menor que o formal"
+                    >
+                      <div class="bar-fill bar-fill--informal" style="width:37%"></div>
+                    </div>
+                  </dd>
+                </div>
+              </dl>
+            </div>
+
+          </div><!-- /quality-metrics -->
+        </section><!-- /Qualidade do Trabalho -->
+
+
+        <!-- ══ SEÇÃO: Preocupações ══ -->
+        <section class="card" aria-labelledby="h2-preocupacoes">
+          <header class="card-header">
+            <p class="card-category">Método da Empatia</p>
+            <h2 id="h2-preocupacoes">Preocupações</h2>
+          </header>
+
+          <!--
+            ACESSIBILIDADE — PROBLEMA CORRIGIDO:
+            O design original usa nuvem de palavras onde o tamanho
+            da fonte indica a frequência/importância do tema.
+            PROBLEMA: leitores de tela não percebem diferença de tamanho.
+            SOLUÇÃO: <ul> semântica — cada preocupação é um <li>.
+            O estilo visual (tamanho) é mantido com classes CSS,
+            mas o conteúdo é plenamente acessível via texto.
+          -->
+          <ul
+            class="concerns-list"
+            aria-label="Principais preocupações identificadas entre trabalhadores domésticos informais"
+          >
+            <li class="concern concern--xl">MEDO</li>
+            <li class="concern concern--xl concern--accent">CONFIANÇA</li>
+            <li class="concern concern--lg">VALOR</li>
+            <li class="concern concern--xl">SEGURANÇA</li>
+            <li class="concern concern--md">TRANSPORTE</li>
+            <li class="concern concern--lg concern--accent">PREÇO</li>
+            <li class="concern concern--sm">ESTABILIDADE</li>
+            <li class="concern concern--md concern--accent">SAÚDE</li>
+          </ul>
+        </section><!-- /Preocupações -->
+
+      </div><!-- /Linha 2 -->
+
+
+      <!-- ─────────── LINHA 3: Canal de Aquisição ─────────── -->
+      <section class="card card--full" aria-labelledby="h2-canal">
+        <div class="canal-grid">
+
+          <div class="canal-text">
+            <header class="card-header">
+              <p class="card-category">Cenário Obsoleto</p>
+              <h2 id="h2-canal">Canal de Aquisição</h2>
+            </header>
+            <p>
+              O mercado doméstico é movido quase exclusivamente pela reputação pessoal.
+              A indicação direta domina o cenário de contratação, superando plataformas digitais.
+            </p>
+
+            <!--
+              HTML Semântico: <dl> para pares estatísticos
+            -->
+            <dl class="canal-stats">
+              <div>
+                <dt>Indicação</dt>
+                <dd>85.7%</dd>
+              </div>
+              <div>
+                <dt>Outros</dt>
+                <dd>14.3%</dd>
+              </div>
+            </dl>
+          </div>
+
+          <!--
+            ACESSIBILIDADE — Prática 4:
+            Gráfico de barras com <figure>, SVG role="img" e <title>
+            Tabela de dados oculta (sr-only) para leitores de tela
+          -->
+          <figure aria-labelledby="titulo-canal-chart">
+            <svg
+              class="canal-chart-svg"
+              viewBox="0 0 280 150"
+              role="img"
+              aria-labelledby="titulo-canal-chart"
+            >
+              <title id="titulo-canal-chart">
+                Gráfico de barras: Canais de aquisição de clientes — Indicação 85,7% e Outros 14,3%.
+              </title>
+
+              <!-- Linhas de grade -->
+              <line x1="40" y1="10"  x2="270" y2="10"  stroke="#dde6ef" stroke-width="1"/>
+              <line x1="40" y1="47"  x2="270" y2="47"  stroke="#dde6ef" stroke-width="1"/>
+              <line x1="40" y1="84"  x2="270" y2="84"  stroke="#dde6ef" stroke-width="1"/>
+              <line x1="40" y1="121" x2="270" y2="121" stroke="#dde6ef" stroke-width="1"/>
+
+              <!-- Rótulos eixo Y -->
+              <text x="35" y="13"  text-anchor="end" class="chart-axis-label">100%</text>
+              <text x="35" y="50"  text-anchor="end" class="chart-axis-label">75%</text>
+              <text x="35" y="87"  text-anchor="end" class="chart-axis-label">50%</text>
+              <text x="35" y="124" text-anchor="end" class="chart-axis-label">25%</text>
+
+              <!-- Barra: Indicação 85.7% → altura ≈ 103px de 121px base -->
+              <rect x="60"  y="17.9" width="70" height="103.1" fill="#1a5fa8" rx="5"/>
+
+              <!-- Barra: Outros 14.3% → altura ≈ 17.3px -->
+              <rect x="175" y="103.7" width="70" height="17.3" fill="#b8cee8" rx="5"/>
+
+              <!-- Rótulos eixo X -->
+              <text x="95"  y="145" text-anchor="middle" class="chart-bar-label">Indicação</text>
+              <text x="210" y="145" text-anchor="middle" class="chart-bar-label">Outros</text>
+            </svg>
+
+            <!-- Tabela oculta para leitores de tela -->
+            <table class="sr-only">
+              <caption>Canal de aquisição de clientes para trabalhadores domésticos informais</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Canal</th>
+                  <th scope="col">Percentual</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Indicação (boca a boca / reputação pessoal)</td><td>85,7%</td></tr>
+                <tr><td>Outros meios (plataformas digitais e afins)</td><td>14,3%</td></tr>
+              </tbody>
+            </table>
+
+            <figcaption class="sr-only">
+              Gráfico mostrando que 85,7% das contratações de trabalhadores domésticos ocorrem por indicação
+              direta, enquanto apenas 14,3% ocorrem por outros meios.
+            </figcaption>
+          </figure>
+
+        </div><!-- /canal-grid -->
+      </section><!-- /Canal de Aquisição -->
+
+
+      <!-- ══════════════════════════════════════════
+           RODAPÉ
+           HTML Semântico: <footer> dentro de <main>
+      ═══════════════════════════════════════════ -->
+      <footer class="dashboard-footer">
+        <p>
+          Dados compilados da PNAD contínua IBGE &amp; Pesquisa Local 2026.
+          Todos os direitos reservados.
+        </p>
+      </footer>
+
+    </main><!-- /main#conteudo-principal -->
+
+  </div><!-- /layout -->
+
+</body>
+</html>
