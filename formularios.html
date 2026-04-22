@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<!--
+  ══════════════════════════════════════════════════════════
+  PRÁTICA IHC — Formulários HTML Acessíveis
+  Projeto Integrador I – UniCEUB
+  Profª. Kadidja Valéria | Ciência da Computação
+
+  Conceitos aplicados (slides + manual formularios-acessiveis.gov.br):
+  ─ <html lang="pt-BR">               → Prática 3: Identidade do Idioma
+  ─ Skip Link                         → WCAG 2.4.1 — bypass blocks
+  ─ Hierarquia H1 > H2 > H3          → Prática 1: Arquitetura da Informação
+  ─ <label for="id"> + <input id="">  → Elemento LABEL: vinculação programática
+  ─ Ordem Rótulo→Campo (text, etc.)   → Regra de Estrutura: texto antes do input
+  ─ Ordem Campo→Rótulo (checkbox)     → Regra: leitor espera rótulo DEPOIS
+  ─ <fieldset> + <legend>             → Agrupamento semântico acessível
+  ─ <optgroup label="">               → Categorização de listas SELECT
+  ─ accesskey nos campos              → Teclas de atalho (com alerta de conflito)
+  ─ required + aria-required          → Validação sem depender de script
+  ─ aria-describedby (dicas)          → Contexto extra para leitores de tela
+  ─ <button type="submit">            → Nunca <div>; semântica nativa de ação
+  ─ Erros no <title>                  → Manual §4: mensagens de erro amigáveis
+  ─ Validação server-side preferida   → Manual §3: scripts não são confiáveis
+  ══════════════════════════════════════════════════════════
+-->
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Formulários acessíveis do Dashboard – Projeto Integrador I, UniCEUB." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+  <!--
+    ACESSIBILIDADE — Manual §4 / Slides p.14:
+    O <title> deve ser atualizado com um alerta quando houver erro de validação.
+    O JavaScript ao final da página demonstra essa técnica.
+    Título padrão (sem erros):
+  -->
+  <title>Formulários | Dashboard – Trabalho Doméstico Informal | Projeto Integrador I – UniCEUB</title>
+
+  <style>
+    /* ═══════════════════════════════════════════
+       TOKENS — mesmos do dashboard principal
+    ═══════════════════════════════════════════ */
+    :root {
+      --sidebar-bg:     #0f1d2e;
+      --sidebar-w:      210px;
+      --blue-dark:      #1a3c6e;
+      --blue-mid:       #1a5fa8;
+      --blue-light:     #b8cee8;
+      --blue-pale:      #dce8f5;
+      --bg-page:        #f0f4f8;
+      --bg-card:        #ffffff;
+      --text-primary:   #0d1f36;
+      --text-secondary: #5a738a;
+      --text-muted:     #8ea8bf;
+      --accent-pink:    #e0186b;
+      --border:         #dde6ef;
+      --border-focus:   #1a5fa8;
+      --card-radius:    14px;
+      --shadow:         0 2px 12px rgba(10, 40, 80, .08);
+      --error-bg:       #fff0f3;
+      --error-border:   #e0186b;
+      --error-text:     #9b0039;
+      --success-bg:     #f0faf4;
+      --success-border: #22a05b;
+      --success-text:   #155235;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ═══════════════════════════════════════════
+       ACESSIBILIDADE — Skip Link (WCAG 2.4.1)
+    ═══════════════════════════════════════════ */
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 8px;
+      background: var(--blue-mid);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-weight: 600;
+      text-decoration: none;
+      z-index: 9999;
+      transition: top .2s;
+    }
+    .skip-link:focus { top: 8px; }
+
+    /* ═══════════════════════════════════════════
+       ACESSIBILIDADE — Conteúdo visível apenas
+       para leitores de tela (sr-only)
+    ═══════════════════════════════════════════ */
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ═══════════════════════════════════════════
+       ACESSIBILIDADE — Foco visível (WCAG 2.4.7)
+    ═══════════════════════════════════════════ */
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--border-focus);
+      border-radius: 4px;
+    }
+
+    /* ═══════════════════════════════════════════
+       LAYOUT
+    ═══════════════════════════════════════════ */
+    .layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      min-height: 100vh;
+    }
+
+    /* ═══════════════════════════════════════════
+       SIDEBAR — igual ao dashboard
+    ═══════════════════════════════════════════ */
+    .sidebar {
+      background: var(--sidebar-bg);
+      color: #cbd8e4;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .project-title  { font-weight: 700; font-size: 13px; color: #fff; }
+    .project-subtitle { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    .sidebar-nav { padding: 16px 0; }
+    .sidebar-nav ul { list-style: none; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 20px; color: #9db8cc;
+      text-decoration: none; font-size: 13px;
+      border-left: 3px solid transparent;
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .nav-item:hover { background: rgba(255,255,255,.06); color: #fff; }
+    .nav-item[aria-current="page"] {
+      color: #fff; background: rgba(26,95,168,.35);
+      border-left-color: var(--blue-mid); font-weight: 600;
+    }
+    .nav-icon { width: 16px; height: 16px; flex-shrink: 0; }
+    .filters-section {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .filters-heading {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .filters-fieldset {
+      border: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    /* label envolve o input: aumenta área de clique (Prática 5) */
+    .filter-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      color: #9db8cc;
+      padding: 4px 0;
+    }
+    .filter-label:hover { color: #fff; }
+    .filter-label input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid currentColor;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .filter-label input[type="checkbox"]:checked { background: currentColor; }
+    .filter-label.ibge input { color: #4a9fd4; }
+    .filter-label.local input { color: #a070c8; }
+
+    /* ─────────────────────────────────────────────
+       SIDEBAR FOOTER: Logo + Botões
+    ───────────────────────────────────────────── */
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 20px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+
+    /* CEUB Logo (texto) */
+    .ceub-logo {
+      width: 100px;
+    }
+
+    /* ─────────────────────────────────────────────
+       ACESSIBILIDADE: Botões nativos (<button>)
+       Prática: Substituição de divs por <button>
+    ───────────────────────────────────────────── */
+    .btn-sidebar {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #9db8cc;
+      padding: 6px 0;
+      text-align: left;
+      transition: color .15s;
+    }
+    .btn-sidebar:hover { color: #fff; }
+
+    .btn-export {
+      width: 100%;
+      background: var(--blue-mid);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background .15s;
+    }
+    .btn-export:hover { background: var(--blue-dark); }
+
+    /* ═══════════════════════════════════════════
+       MAIN
+    ═══════════════════════════════════════════ */
+    .main-content {
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .page-header { margin-bottom: 4px; }
+    .page-category {
+      font-size: 11px; text-transform: uppercase;
+      letter-spacing: .12em; color: var(--blue-mid); font-weight: 600;
+    }
+    /* ACESSIBILIDADE — H1 único por página (Prática 1) */
+    .page-header h1 {
+      font-size: 26px; font-weight: 800;
+      color: var(--text-primary); margin-top: 4px; line-height: 1.2;
+    }
+    .page-lead {
+      font-size: 13px; color: var(--text-secondary);
+      margin-top: 6px; max-width: 600px; line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════════
+       CARDS DE FORMULÁRIO
+    ═══════════════════════════════════════════ */
+    .forms-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    .forms-col { display: flex; flex-direction: column; gap: 20px; }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--card-radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+    .card-header { margin-bottom: 20px; }
+    .card-category {
+      font-size: 10px; text-transform: uppercase;
+      letter-spacing: .12em; color: var(--blue-mid); font-weight: 700;
+    }
+    /* ACESSIBILIDADE — H2: seção principal (Prática 1) */
+    .card-header h2 {
+      font-size: 17px; font-weight: 700;
+      color: var(--text-primary); margin-top: 3px;
+    }
+    .card-desc {
+      font-size: 12px; color: var(--text-secondary);
+      margin-top: 4px; line-height: 1.5;
+    }
+
+    /* ═══════════════════════════════════════════
+       ELEMENTOS DE FORMULÁRIO
+       Regra estrutural: Label ANTES do campo
+       (exceto checkbox/radio: campo ANTES do label)
+    ═══════════════════════════════════════════ */
+
+    /* Container de campo: empilha label → input */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 16px;
+    }
+    /* .field:last-of-type { margin-bottom: 0; } */
+
+    /*
+      ACESSIBILIDADE — Elemento LABEL:
+      O atributo 'for' DEVE ser idêntico ao 'id' do input.
+      Isso relaciona programaticamente o rótulo ao campo.
+      (slides p.10 / manual §2)
+    */
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    /* Indicador de campo obrigatório */
+    .required-mark {
+      color: var(--accent-pink);
+      margin-left: 2px;
+      font-weight: 700;
+    }
+
+    /* Dica de acessibilidade abaixo do rótulo */
+    .field-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Inputs, Textareas, Selects */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="search"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text-primary);
+      background: #fff;
+      transition: border-color .15s, box-shadow .15s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="search"]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(26, 95, 168, .15);
+      outline: none;
+    }
+
+    /* Campo com erro */
+    input[aria-invalid="true"],
+    textarea[aria-invalid="true"],
+    select[aria-invalid="true"] {
+      border-color: var(--error-border);
+      background: var(--error-bg);
+    }
+
+    textarea { resize: vertical; min-height: 90px; }
+
+    /* Select com seta personalizada */
+    .select-wrapper {
+      position: relative;
+    }
+    .select-wrapper::after {
+      content: '';
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid var(--text-muted);
+      pointer-events: none;
+    }
+
+    /*
+      ACESSIBILIDADE — Prática 5: Checkbox
+      Ordem: ELEMENTO → RÓTULO (leitor de tela espera
+      o rótulo DEPOIS do campo, conforme manual §1)
+      O <label> envolve o input para ampliar a área de clique.
+    */
+    .field-checkbox {
+      margin-bottom: 16px;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .checkbox-label input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      margin-top: 1px;
+      accent-color: var(--blue-mid);
+      cursor: pointer;
+    }
+
+    /*
+      ACESSIBILIDADE — Radio buttons
+      Mesma regra: ELEMENTO → RÓTULO
+    */
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .radio-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .radio-label input[type="radio"] {
+      accent-color: var(--blue-mid);
+      width: 14px; height: 14px;
+      cursor: pointer;
+    }
+
+    /*
+      ACESSIBILIDADE — Fieldset e Legend:
+      <fieldset> agrupa campos relacionados.
+      <legend> é o "título narrativo" do grupo,
+      lido pelo leitor de tela antes de cada campo.
+      (slides p.11 / manual §2)
+    */
+    .form-fieldset {
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .form-fieldset legend {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--blue-mid);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 0 6px;
+    }
+
+    /* Botões */
+    .btn-primary {
+      background: var(--blue-mid);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      transition: background .15s;
+      letter-spacing: .01em;
+    }
+    .btn-primary:hover { background: var(--blue-dark); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--blue-mid);
+      border: 1.5px solid var(--blue-light);
+      border-radius: 8px;
+      padding: 9px 20px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background .15s, border-color .15s;
+    }
+    .btn-secondary:hover { background: var(--blue-pale); border-color: var(--blue-mid); }
+
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    /* ═══════════════════════════════════════════
+       MENSAGENS DE ERRO E SUCESSO
+       Manual §4: erros devem ser destacados
+       e comunicados no <title> da página
+    ═══════════════════════════════════════════ */
+    .msg-error {
+      background: var(--error-bg);
+      border: 1.5px solid var(--error-border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: var(--error-text);
+      margin-bottom: 16px;
+      display: none; /* mostrado via JS */
+    }
+    .msg-error ul { padding-left: 18px; margin-top: 4px; }
+    .msg-error li { margin-top: 2px; }
+
+    .msg-success {
+      background: var(--success-bg);
+      border: 1.5px solid var(--success-border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--success-text);
+      font-weight: 600;
+      display: none;
+    }
+
+    .field-error-msg {
+      font-size: 11px;
+      color: var(--error-text);
+      display: none;
+    }
+    .field-error-msg.visible { display: block; }
+
+    /* ═══════════════════════════════════════════
+       ACCESSKEY BADGE (visual indicativo)
+    ═══════════════════════════════════════════ */
+    .accesskey-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 400;
+      margin-left: 6px;
+    }
+    .accesskey-badge kbd {
+      background: #eef2f8;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 1px 4px;
+      font-family: monospace;
+      font-size: 10px;
+      color: var(--text-primary);
+    }
+
+    /* ═══════════════════════════════════════════
+       SEPARADOR DE SEÇÃO
+    ═══════════════════════════════════════════ */
+    .section-sep {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 0 20px;
+    }
+
+    /* Rodapé */
+    .dashboard-footer {
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .dashboard-footer p { font-size: 11px; color: var(--text-muted); }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVIDADE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; padding: 12px 16px; flex-direction: row; flex-wrap: wrap; }
+      .forms-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════════
+       ACESSIBILIDADE: Skip Link
+  ═══════════════════════════════════════════ -->
+  <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo principal</a>
+
+  <div class="layout">
+
+    <!-- ══════════════════════════════════════════
+         SIDEBAR (idêntica ao dashboard)
+         HTML Semântico: <aside> + <nav>
+    ═══════════════════════════════════════════ -->
+    <aside class="sidebar" aria-label="Painel lateral de navegação e filtros">
+
+      <header class="sidebar-header">
+        <p class="project-title">Projeto Integrador I</p>
+        <p class="project-subtitle">Dashboard Protótipo v1.0</p>
+      </header>
+
+      <!--
+        HTML Semântico: <nav> com aria-label único
+        <ul> + <li> + <a> para estrutura de lista de navegação
+      -->
+      <nav class="sidebar-nav" aria-label="Menu principal do dashboard">
+        <ul role="list">
+          <li>
+            <a href="index.html" class="nav-item" >
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="#conteudo-principal" class="nav-item" aria-current="page">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 10h8M8 14h4"/></svg>
+              Formulários
+            </a>
+          </li>
+          <li>
+            <a href="#diaristas" class="nav-item">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              Diaristas
+            </a>
+          </li>
+          <li>
+            <a href="#contratantes" class="nav-item">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="3"/><circle cx="16" cy="9" r="2"/><path d="M2 20c0-3 3-5 7-5s7 2 7 5"/><path d="M18 14c2 0 4 1.3 4 4"/></svg>
+              Contratantes
+            </a>
+          </li>
+          <li>
+            <a href="#fontes" class="nav-item">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="17" width="18" height="4" rx="1"/></svg>
+              Fontes de Dados
+            </a>
+          </li>
+          <li>
+            <a href="#pesquisa" class="nav-item">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+              Pesquisa Local
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!--
+        ACESSIBILIDADE — Prática 5: Formulários Inclusivos
+        <fieldset> agrupa filtros relacionados
+        <legend> descreve o grupo para leitores de tela
+        <label> envolve o <input> — aumenta área de clique
+        e associa o texto descritivo ao campo
+      -->
+      <section class="filters-section" aria-labelledby="filtros-titulo">
+        <h2 id="filtros-titulo" class="filters-heading sr-only">Filtros de Dados</h2>
+        <p class="filters-heading" aria-hidden="true">Filtros de Dados</p>
+
+        <fieldset class="filters-fieldset">
+          <legend class="sr-only">Selecionar fontes de dados a exibir</legend>
+
+          <label class="filter-label ibge">
+            <input type="checkbox" name="filtro-ibge" checked aria-describedby="desc-ibge" />
+            IBGE/IPEA
+          </label>
+          <span id="desc-ibge" class="sr-only">Dados da Pesquisa Nacional por Amostra de Domicílios (PNAD) do IBGE e do IPEA</span>
+
+          <label class="filter-label local">
+            <input type="checkbox" name="filtro-local" aria-describedby="desc-local" />
+            Local Research
+          </label>
+          <span id="desc-local" class="sr-only">Dados da pesquisa de campo realizada pelo grupo</span>
+        </fieldset>
+      </section>
+      
+      <section class="filters-section" aria-labelledby="filtros-titulo">
+        <p class="filters-heading" aria-hidden="true">Autores</p>
+
+        <p class="project-title">Lucas Gonçalves Balduino</p>
+        <p class="project-subtitle">Product Owner</p>
+      </section>
+
+      <div class="sidebar-footer">
+        <!-- Logo CEUB acessível em imagem) -->
+        <div class="ceub-logo" role="img" aria-label="CEUB – Centro Universitário de Brasília">
+          <img src="https://institucional.uniceub.br/hubfs/BrandCenter/img/logo-ceub-colorida-02.png" alt="Logo institucional UniCEUB" class="ceub-logo">
+        </div>
+
+        <!--
+          ACESSIBILIDADE: <button> nativo com aria-pressed
+          para o toggle de tema (estado declarado ao leitor de tela)
+        -->
+        <button
+          type="button"
+          class="btn-sidebar"
+          aria-pressed="false"
+          aria-label="Alternar entre tema claro e escuro"
+          onclick="this.setAttribute('aria-pressed', this.getAttribute('aria-pressed')==='false' ? 'true' : 'false')"
+        >
+          <svg width="14" height="14" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          Theme Toggle
+        </button>
+
+        <!--
+          ACESSIBILIDADE: <button> nativo — substitui <div> estilizado
+          Prática: Fake Button → <button> semântico
+        -->
+        <button type="button" class="btn-export">
+          <svg width="13" height="13" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+          Export Report
+        </button>
+      </div>
+
+    </aside><!-- /aside.sidebar -->
+
+
+    <!-- ══════════════════════════════════════════
+         CONTEÚDO PRINCIPAL
+    ═══════════════════════════════════════════ -->
+    <main id="conteudo-principal" class="main-content" aria-labelledby="titulo-pagina">
+
+      <!-- Cabeçalho da página -->
+      <header class="page-header">
+        <p class="page-category">Atividade Prática — IHC</p>
+        <!--
+          ACESSIBILIDADE — Prática 1: único H1 por página.
+        -->
+        <h1 id="titulo-pagina">Formulários HTML Acessíveis</h1>
+        <p class="page-lead">
+          Formulários desenvolvidos com boas práticas de IHC: estrutura semântica,
+          rótulos vinculados, agrupamentos com <code>&lt;fieldset&gt;</code> e validação
+          acessível. Referência: eMAG / WCAG 2.1 / Manual Gov.br.
+        </p>
+      </header>
+
+
+      <!-- ════ GRADE DE FORMULÁRIOS ════ -->
+      <div class="forms-grid">
+
+        <!-- ══ COLUNA 1 (larga): Formulário Principal ══ -->
+        <div class="forms-col">
+
+          <!-- ┌───────────────────────────────────────────────┐
+               │  FORMULÁRIO 1 — CADASTRO PARA ATUALIZAÇÕES   │
+               │  (Formulário Principal da Atividade)          │
+               └───────────────────────────────────────────────┘
+               Conceitos aplicados:
+               • <fieldset> + <legend> para cada grupo de campos
+               • label for="x" + input id="x" para todos os campos
+               • checkbox: ELEMENTO → RÓTULO (order: input antes do texto)
+               • required + aria-required="true"
+               • aria-describedby para dicas de preenchimento
+               • <button type="submit"> — não <div> nem <input type="button">
+               • Validação com alerta no <title> se houver erro
+          -->
+          <section class="card" aria-labelledby="h2-cadastro">
+            <header class="card-header">
+              <p class="card-category">Formulário Principal</p>
+              <!--
+                ACESSIBILIDADE — Prática 1: H2 para seção principal
+              -->
+              <h2 id="h2-cadastro">Cadastro para Atualizações do Dashboard</h2>
+              <p class="card-desc">
+                Receba novos dados e análises do mercado de trabalho doméstico informal diretamente no seu e-mail.
+              </p>
+            </header>
+
+            <!--
+              ACESSIBILIDADE — Manual §4:
+              Área de erro: aparece dinamicamente via JS e atualiza o <title>.
+              role="alert" garante que leitores de tela anunciem o erro imediatamente.
+            -->
+            <div
+              id="erro-cadastro"
+              class="msg-error"
+              role="alert"
+              aria-live="assertive"
+              aria-atomic="true"
+            >
+              <strong>Atenção:</strong> corrija os campos indicados:
+              <ul id="lista-erros-cadastro"></ul>
+            </div>
+
+            <div id="sucesso-cadastro" class="msg-success" role="status" aria-live="polite">
+              ✓ Cadastro realizado! Verifique sua caixa de entrada.
+            </div>
+
+            <!--
+              HTML Semântico: <form> com action e method.
+              Manual §3: prefira validação no servidor (method="POST").
+              novalidate é OMITIDO aqui para manter a validação nativa do HTML5
+              como primeira camada; a validação JS é uma camada adicional.
+            -->
+            <form
+              id="form-cadastro"
+              action="/cadastro-atualizacoes"
+              method="POST"
+              aria-labelledby="h2-cadastro"
+              novalidate
+            >
+
+              <!--
+                ACESSIBILIDADE — Fieldset 1: Dados de Identificação
+                <fieldset> agrupa campos com características em comum.
+                <legend> é lido pelo leitor de tela antes de cada campo do grupo.
+                (slides p.11 / manual §2)
+              -->
+              <fieldset class="form-fieldset">
+                <legend>Dados de Identificação</legend>
+
+                <!--
+                  CAMPO: Nome completo
+                  Estrutura: RÓTULO → ELEMENTO (para input type="text")
+                  label for="nome-cadastro" = id do input
+                  accesskey="n" → Alt+N foca neste campo
+                -->
+                <div class="field">
+                  <label for="nome-cadastro">
+                    Nome completo
+                    <span class="required-mark" aria-hidden="true">*</span>
+                    <span class="accesskey-badge">
+                      <kbd>Alt</kbd>+<kbd>N</kbd>
+                    </span>
+                  </label>
+                  <span id="dica-nome" class="field-hint">
+                    Informe seu nome e sobrenome.
+                  </span>
+                  <!--
+                    input type="text":
+                    • id="nome-cadastro" → vincula ao label acima
+                    • name="nome" → identifica o campo no POST
+                    • required → validação nativa HTML5
+                    • aria-required="true" → para leitores de tela
+                    • aria-describedby → lê a dica (span#dica-nome) após o rótulo
+                    • accesskey="n" → atalho de teclado (conflito possível; manual §teclas)
+                  -->
+                  <input
+                    type="text"
+                    id="nome-cadastro"
+                    name="nome"
+                    required
+                    aria-required="true"
+                    aria-describedby="dica-nome erro-nome"
+                    autocomplete="name"
+                    accesskey="n"
+                    placeholder="Ex.: Maria da Silva"
+                  />
+                  <span id="erro-nome" class="field-error-msg" role="alert"></span>
+                </div>
+
+                <!--
+                  CAMPO: E-mail
+                  Estrutura: RÓTULO → ELEMENTO
+                  type="email" → validação semântica nativa
+                -->
+                <div class="field">
+                  <label for="email-cadastro">
+                    E-mail
+                    <span class="required-mark" aria-hidden="true">*</span>
+                    <span class="accesskey-badge">
+                      <kbd>Alt</kbd>+<kbd>E</kbd>
+                    </span>
+                  </label>
+                  <span id="dica-email" class="field-hint">
+                    Será usado para envio das atualizações do dashboard.
+                  </span>
+                  <input
+                    type="email"
+                    id="email-cadastro"
+                    name="email"
+                    required
+                    aria-required="true"
+                    aria-describedby="dica-email erro-email"
+                    autocomplete="email"
+                    accesskey="e"
+                    placeholder="Ex.: maria@exemplo.com.br"
+                  />
+                  <span id="erro-email" class="field-error-msg" role="alert"></span>
+                </div>
+
+              </fieldset><!-- /fieldset Dados de Identificação -->
+
+
+              <!--
+                ACESSIBILIDADE — Fieldset 2: Preferências de Recebimento
+                Demonstra uso de radio buttons dentro de fieldset.
+                Estrutura radio: ELEMENTO → RÓTULO
+                (leitor de tela espera o rótulo DEPOIS do input)
+              -->
+              <fieldset class="form-fieldset">
+                <legend>Preferências de Recebimento</legend>
+
+                <div class="field">
+                  <span id="label-periodicidade" style="font-size:12px;font-weight:600;color:var(--text-secondary);">
+                    Periodicidade
+                    <span class="required-mark" aria-hidden="true">*</span>
+                  </span>
+                  <!--
+                    Radio buttons:
+                    ESTRUTURA: input → rótulo (Elemento primeiro, depois o texto)
+                    Todos com mesmo name="periodicidade" → grupo exclusivo
+                    Vinculados via label for="id"
+                  -->
+                  <div
+                    class="radio-group"
+                    role="radiogroup"
+                    aria-labelledby="label-periodicidade"
+                  >
+                    <!--
+                      input type="radio" — ordem correta:
+                      <input ...> rótulo (sem label separado; label envolve tudo)
+                    -->
+                    <label class="radio-label" for="freq-semanal">
+                      <input
+                        type="radio"
+                        id="freq-semanal"
+                        name="periodicidade"
+                        value="semanal"
+                        required
+                        aria-required="true"
+                      />
+                      Semanal
+                    </label>
+
+                    <label class="radio-label" for="freq-mensal">
+                      <input
+                        type="radio"
+                        id="freq-mensal"
+                        name="periodicidade"
+                        value="mensal"
+                        checked
+                      />
+                      Mensal
+                    </label>
+
+                    <label class="radio-label" for="freq-trimestral">
+                      <input
+                        type="radio"
+                        id="freq-trimestral"
+                        name="periodicidade"
+                        value="trimestral"
+                      />
+                      Trimestral
+                    </label>
+                  </div>
+                  <span id="erro-periodicidade" class="field-error-msg" role="alert"></span>
+                </div>
+
+              </fieldset><!-- /fieldset Preferências -->
+
+
+              <!--
+                ACESSIBILIDADE — Fieldset 3: Consentimento
+                Checkbox: ELEMENTO → RÓTULO (ordem exigida)
+                O <label> envolve o <input> para ampliar a área de clique.
+              -->
+              <fieldset class="form-fieldset">
+                <legend>Consentimento</legend>
+
+                <div class="field-checkbox">
+                  <!--
+                    CHECKBOX: estrutura correta = input ANTES do texto do rótulo.
+                    O <label> envolve o <input type="checkbox">:
+                    • aumenta a área de clique (Prática 5 — slides)
+                    • associa programaticamente o rótulo ao campo
+                  -->
+                  <label class="checkbox-label" for="consentimento">
+                    <input
+                      type="checkbox"
+                      id="consentimento"
+                      name="consentimento"
+                      value="aceito"
+                      required
+                      aria-required="true"
+                      aria-describedby="erro-consentimento"
+                    />
+                    Concordo em receber atualizações do Dashboard – Trabalho Doméstico Informal
+                    e aceito que meu e-mail seja utilizado para esse fim.
+                    <span class="required-mark" aria-hidden="true">*</span>
+                  </label>
+                  <span id="erro-consentimento" class="field-error-msg" role="alert"></span>
+                </div>
+
+              </fieldset><!-- /fieldset Consentimento -->
+
+              <!-- Nota de campos obrigatórios -->
+              <p style="font-size:11px;color:var(--text-muted);margin-bottom:14px;">
+                <span aria-hidden="true">*</span>
+                <span class="sr-only">Asterisco indica</span>
+                Campo obrigatório.
+              </p>
+
+              <!--
+                ACESSIBILIDADE: <button type="submit">
+                Não usar <div class="botao"> — o <button> nativo:
+                • É anunciado como botão pelo leitor de tela
+                • Recebe foco por Tab nativamente
+                • Responde a Enter e Espaço
+                (slides p.12 — "O Perigo do Fake Button")
+              -->
+              <button type="submit" class="btn-primary" form="form-cadastro">
+                Cadastrar para receber atualizações
+              </button>
+
+            </form>
+          </section><!-- /Cadastro para Atualizações -->
+
+
+          <!-- ┌─────────────────────────────────────────────┐
+               │  FORMULÁRIO 3 — FEEDBACK                    │
+               │  Demonstra: textarea, select + optgroup     │
+               └─────────────────────────────────────────────┘ -->
+          <section class="card" aria-labelledby="h2-feedback">
+            <header class="card-header">
+              <p class="card-category">Formulário Complementar</p>
+              <h2 id="h2-feedback">Feedback sobre o Dashboard</h2>
+              <p class="card-desc">
+                Sua opinião ajuda a melhorar as análises e a visualização dos dados.
+              </p>
+            </header>
+
+            <div id="sucesso-feedback" class="msg-success" role="status" aria-live="polite">
+              ✓ Feedback enviado! Obrigado pela sua contribuição.
+            </div>
+
+            <!--
+              action="/feedback" method="POST"
+              Validação deve ocorrer no servidor (manual §3)
+            -->
+            <form
+              id="form-feedback"
+              action="/feedback"
+              method="POST"
+              aria-labelledby="h2-feedback"
+              novalidate
+            >
+              <!--
+                CAMPO: Nome (opcional aqui)
+                Estrutura: RÓTULO → ELEMENTO (label antes do input text)
+              -->
+              <div class="field">
+                <label for="nome-feedback">Nome</label>
+                <span id="dica-nome-fb" class="field-hint">Opcional — preencha se quiser ser identificado.</span>
+                <input
+                  type="text"
+                  id="nome-feedback"
+                  name="nome"
+                  aria-describedby="dica-nome-fb"
+                  autocomplete="name"
+                  placeholder="Seu nome (opcional)"
+                />
+              </div>
+
+              <!--
+                CAMPO: Comentário — textarea
+                Estrutura: RÓTULO → ELEMENTO (label antes da textarea)
+              -->
+              <div class="field">
+                <label for="comentario-feedback">
+                  Comentário
+                  <span class="required-mark" aria-hidden="true">*</span>
+                </label>
+                <span id="dica-comentario" class="field-hint">
+                  Descreva sua experiência com o dashboard ou sugira melhorias.
+                </span>
+                <!--
+                  <textarea>: label ANTES, igual ao input type="text"
+                  rows="4" cols="40" conforme exemplo da atividade
+                -->
+                <textarea
+                  id="comentario-feedback"
+                  name="comentario"
+                  rows="4"
+                  cols="40"
+                  required
+                  aria-required="true"
+                  aria-describedby="dica-comentario erro-comentario"
+                  placeholder="Ex.: Os gráficos de rosca são claros, mas..."
+                ></textarea>
+                <span id="erro-comentario" class="field-error-msg" role="alert"></span>
+              </div>
+
+              <!--
+                CAMPO: Avaliação — select com optgroup
+                Estrutura: RÓTULO → ELEMENTO (label antes do select)
+
+                ACESSIBILIDADE — <optgroup label="">:
+                Agrupa semanticamente as opções dentro do SELECT.
+                O atributo 'label' define o nome não-selecionável do grupo.
+                (slides p.12 / manual §2 — elemento OPTGROUP)
+              -->
+              <div class="field">
+                <label for="avaliacao-feedback">
+                  Avaliação
+                  <span class="required-mark" aria-hidden="true">*</span>
+                </label>
+                <div class="select-wrapper">
+                  <select
+                    id="avaliacao-feedback"
+                    name="avaliacao"
+                    required
+                    aria-required="true"
+                  >
+                    <option value="" disabled selected>Selecione uma avaliação…</option>
+
+                    <!--
+                      <optgroup>: agrupa opções por categoria semântica.
+                      O leitor de tela anuncia o nome do grupo antes das opções.
+                    -->
+                    <optgroup label="Avaliação Positiva">
+                      <option value="excelente">Excelente — superou as expectativas</option>
+                      <option value="bom">Bom — atendeu as expectativas</option>
+                    </optgroup>
+
+                    <optgroup label="Avaliação Crítica">
+                      <option value="regular">Regular — pode melhorar</option>
+                      <option value="ruim">Ruim — não atendeu as expectativas</option>
+                    </optgroup>
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-primary">
+                Enviar Feedback
+              </button>
+
+            </form>
+          </section><!-- /Feedback -->
+
+        </div><!-- /forms-col (larga) -->
+
+
+        <!-- ══ COLUNA 2 (estreita): Login + Pesquisa ══ -->
+        <div class="forms-col">
+
+          <!-- ┌─────────────────────────────────────────────┐
+               │  FORMULÁRIO 2 — LOGIN                       │
+               │  Demonstra: password, label+input exatos    │
+               └─────────────────────────────────────────────┘ -->
+          <section class="card" aria-labelledby="h2-login">
+            <header class="card-header">
+              <p class="card-category">Formulário Complementar</p>
+              <h2 id="h2-login">Acesso ao Dashboard</h2>
+              <p class="card-desc">
+                Insira suas credenciais para acessar os dados completos do Projeto Integrador.
+              </p>
+            </header>
+
+            <div id="erro-login" class="msg-error" role="alert" aria-live="assertive" aria-atomic="true">
+              <strong>Credenciais inválidas.</strong> Verifique seu usuário e senha.
+            </div>
+
+            <!--
+              action="/login" method="POST" — conforme exemplo da atividade
+            -->
+            <form
+              id="form-login"
+              action="/login"
+              method="POST"
+              aria-labelledby="h2-login"
+              novalidate
+            >
+
+              <!--
+                CAMPO: Usuário — input type="text"
+                Estrutura: RÓTULO → ELEMENTO
+                label for="usuario" vincula ao input id="usuario"
+              -->
+              <div class="field">
+                <label for="usuario">
+                  Usuário
+                  <span class="required-mark" aria-hidden="true">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="usuario"
+                  name="usuario"
+                  required
+                  aria-required="true"
+                  autocomplete="username"
+                  placeholder="Seu nome de usuário"
+                />
+              </div>
+
+              <!--
+                CAMPO: Senha — input type="password"
+                Estrutura: RÓTULO → ELEMENTO (igual ao text)
+                (slides p.6 — "Text & Password: Rótulo → Elemento")
+              -->
+              <div class="field">
+                <label for="senha">
+                  Senha
+                  <span class="required-mark" aria-hidden="true">*</span>
+                </label>
+                <span id="dica-senha" class="field-hint">
+                  Mínimo de 8 caracteres.
+                </span>
+                <input
+                  type="password"
+                  id="senha"
+                  name="senha"
+                  required
+                  aria-required="true"
+                  aria-describedby="dica-senha"
+                  autocomplete="current-password"
+                  minlength="8"
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <!--
+                CHECKBOX: Manter conectado
+                Estrutura: ELEMENTO → RÓTULO
+              -->
+              <div class="field-checkbox" style="margin-bottom:16px;">
+                <label class="checkbox-label" for="lembrar-login">
+                  <input
+                    type="checkbox"
+                    id="lembrar-login"
+                    name="lembrar"
+                    value="sim"
+                  />
+                  Manter-me conectado neste dispositivo
+                </label>
+              </div>
+
+              <!--
+                <button type="submit"> — semântica nativa de ação
+                Nunca usar <div> estilizado como botão.
+              -->
+              <button type="submit" class="btn-primary">
+                Entrar
+              </button>
+
+            </form>
+          </section><!-- /Login -->
+
+
+          <!-- ┌─────────────────────────────────────────────┐
+               │  FORMULÁRIO 4 — PESQUISA LOCAL              │
+               │  Demonstra: input search, method="GET"      │
+               └─────────────────────────────────────────────┘ -->
+          <section class="card" aria-labelledby="h2-pesquisa">
+            <header class="card-header">
+              <p class="card-category">Formulário Complementar</p>
+              <h2 id="h2-pesquisa">Pesquisa nos Dados</h2>
+              <p class="card-desc">
+                Busque registros, diaristas, contratantes ou indicadores no banco de dados do projeto.
+              </p>
+            </header>
+
+            <!--
+              action="/buscar" method="GET" — busca é GET (não altera estado)
+              Conforme exemplo da atividade
+            -->
+            <form
+              id="form-pesquisa"
+              action="/buscar"
+              method="GET"
+              aria-labelledby="h2-pesquisa"
+              role="search"
+            >
+
+              <!--
+                CAMPO: Termo de busca — input type="search"
+                Estrutura: RÓTULO → ELEMENTO
+                type="search" tem semântica própria para buscas
+                accesskey="s" → atalho de teclado para o campo de busca
+                (manual §teclas — exemplo clássico de accesskey)
+              -->
+              <div class="field">
+                <label for="pesquisa">
+                  Termo de busca
+                  <span class="accesskey-badge">
+                    <kbd>Alt</kbd>+<kbd>S</kbd>
+                  </span>
+                </label>
+                <span id="dica-busca" class="field-hint">
+                  Ex.: "diarista Brasília", "taxa informal", "salário".
+                </span>
+                <input
+                  type="search"
+                  id="pesquisa"
+                  name="pesquisa"
+                  aria-describedby="dica-busca"
+                  accesskey="s"
+                  placeholder="Digite sua busca…"
+                  autocomplete="off"
+                />
+              </div>
+
+              <!--
+                CAMPO: Filtro por categoria — select + optgroup
+              -->
+              <div class="field">
+                <label for="categoria-busca">Filtrar por categoria</label>
+                <div class="select-wrapper">
+                  <select id="categoria-busca" name="categoria">
+                    <option value="">Todas as categorias</option>
+
+                    <optgroup label="Mercado de Trabalho">
+                      <option value="taxa-informalidade">Taxa de Informalidade</option>
+                      <option value="qualidade-trabalho">Qualidade do Trabalho</option>
+                      <option value="canal-aquisicao">Canal de Aquisição</option>
+                    </optgroup>
+
+                    <optgroup label="Perfil">
+                      <option value="diaristas">Diaristas</option>
+                      <option value="contratantes">Contratantes</option>
+                    </optgroup>
+
+                    <optgroup label="Legal">
+                      <option value="status-mei">Status MEI</option>
+                    </optgroup>
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-primary">
+                Buscar
+              </button>
+
+            </form>
+          </section><!-- /Pesquisa -->
+
+        </div><!-- /forms-col (estreita) -->
+
+      </div><!-- /forms-grid -->
+
+
+      <!-- ════ RODAPÉ ════ -->
+      <footer class="dashboard-footer">
+        <p>
+          Dados compilados da PNAD contínua IBGE &amp; Pesquisa Local 2026.
+          Todos os direitos reservados.
+        </p>
+        <p>
+          Repositório do Projeto Integrador <a href="https://github.com/Lucas-Balduino/ProjetoIntegrador">https://github.com/Lucas-Balduino/ProjetoIntegrador</a>
+        </p>
+        <p>
+          Repositório de Atividades IHC <a href="https://github.com/Lucas-Balduino/AvaliacaoIHC">https://github.com/Lucas-Balduino/AvaliacaoIHC</a>
+        </p>
+        <p>
+          Autor Lucas Gonçalves Balduino <a href="https://github.com/Lucas-Balduino">https://github.com/Lucas-Balduino</a>
+        </p>
+      </footer>
+
+    </main>
+
+  </div><!-- /layout -->
+
+
+  <!--
+    ══════════════════════════════════════════════════════════
+    JAVASCRIPT — Validação Acessível
+    Manual §4 / Slides p.14:
+    • Atualiza o <title> com mensagem de erro (leitor de tela
+      anuncia ao recarregar ou navegar pela aba)
+    • Exibe mensagens de erro inline com role="alert"
+    • Foco vai para o primeiro campo inválido
+    • Prefira validação server-side; este JS é camada de UX
+    ══════════════════════════════════════════════════════════
+  -->
+  <script>
+    /* Título original sem erros */
+    const tituloOriginal = document.title;
+
+    /**
+     * Mostra mensagem de erro em um campo e marca como inválido.
+     * aria-invalid="true" sinaliza o estado ao leitor de tela.
+     */
+    function marcarErro(inputEl, msgEl, mensagem) {
+      inputEl.setAttribute('aria-invalid', 'true');
+      msgEl.textContent = mensagem;
+      msgEl.classList.add('visible');
+    }
+
+    /** Remove estado de erro de um campo. */
+    function limparErro(inputEl, msgEl) {
+      inputEl.removeAttribute('aria-invalid');
+      msgEl.textContent = '';
+      msgEl.classList.remove('visible');
+    }
+
+    /* ─── FORMULÁRIO DE CADASTRO ─── */
+    document.getElementById('form-cadastro').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const nome     = document.getElementById('nome-cadastro');
+      const email    = document.getElementById('email-cadastro');
+      const consent  = document.getElementById('consentimento');
+      const erroNome = document.getElementById('erro-nome');
+      const erroEmail= document.getElementById('erro-email');
+      const erroConsent = document.getElementById('erro-consentimento');
+      const msgErro  = document.getElementById('erro-cadastro');
+      const listaErr = document.getElementById('lista-erros-cadastro');
+      const msgSuc   = document.getElementById('sucesso-cadastro');
+
+      let erros = [];
+      let primeiroCampoInvalido = null;
+
+      /* Limpa erros anteriores */
+      [nome, email, consent].forEach(el => {
+        el.removeAttribute('aria-invalid');
+      });
+      [erroNome, erroEmail, erroConsent].forEach(el => {
+        el.textContent = ''; el.classList.remove('visible');
+      });
+
+      /* Valida Nome */
+      if (!nome.value.trim() || nome.value.trim().split(' ').length < 2) {
+        marcarErro(nome, erroNome, 'Informe seu nome completo (nome e sobrenome).');
+        erros.push('Nome completo inválido.');
+        primeiroCampoInvalido = primeiroCampoInvalido || nome;
+      } else { limparErro(nome, erroNome); }
+
+      /* Valida E-mail */
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email.value.trim() || !emailRegex.test(email.value.trim())) {
+        marcarErro(email, erroEmail, 'Informe um e-mail válido (ex.: nome@dominio.com).');
+        erros.push('E-mail inválido.');
+        primeiroCampoInvalido = primeiroCampoInvalido || email;
+      } else { limparErro(email, erroEmail); }
+
+      /* Valida Consentimento */
+      if (!consent.checked) {
+        marcarErro(consent, erroConsent, 'É necessário aceitar o consentimento para cadastrar.');
+        erros.push('Consentimento não marcado.');
+        primeiroCampoInvalido = primeiroCampoInvalido || consent;
+      } else { limparErro(consent, erroConsent); }
+
+      if (erros.length > 0) {
+        /*
+          ACESSIBILIDADE — Manual §4:
+          Atualiza o <title> com o alerta de erro.
+          O leitor de tela anuncia o título ao navegar pela aba
+          e ao receber foco na janela.
+        */
+        document.title = 'Alguns dados estão incorretos no formulário. Por favor, corrija. | ' + tituloOriginal;
+
+        /* Mostra o sumário de erros */
+        listaErr.innerHTML = '';
+        erros.forEach(e => {
+          const li = document.createElement('li');
+          li.textContent = e;
+          listaErr.appendChild(li);
+        });
+        msgErro.style.display = 'block';
+        msgSuc.style.display  = 'none';
+
+        /* Foco vai para o primeiro campo inválido */
+        primeiroCampoInvalido.focus();
+
+      } else {
+        /* Sem erros: restaura título e exibe confirmação */
+        document.title = tituloOriginal;
+        msgErro.style.display = 'none';
+        msgSuc.style.display  = 'block';
+        this.reset();
+        msgSuc.focus();
+      }
+    });
+
+    /* ─── FORMULÁRIO DE LOGIN ─── */
+    document.getElementById('form-login').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const usuario = document.getElementById('usuario').value.trim();
+      const senha   = document.getElementById('senha').value;
+      const msgErr  = document.getElementById('erro-login');
+
+      if (!usuario || senha.length < 8) {
+        document.title = 'Erro de login. Verifique suas credenciais. | ' + tituloOriginal;
+        msgErr.style.display = 'block';
+        document.getElementById(usuario ? 'senha' : 'usuario').focus();
+      } else {
+        document.title = tituloOriginal;
+        msgErr.style.display = 'none';
+        alert('Login simulado com sucesso! (Em produção, o servidor processaria a autenticação.)');
+      }
+    });
+
+    /* ─── FORMULÁRIO DE FEEDBACK ─── */
+    document.getElementById('form-feedback').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const comentario = document.getElementById('comentario-feedback');
+      const avaliacao  = document.getElementById('avaliacao-feedback');
+      const erroComent = document.getElementById('erro-comentario');
+      const sucesso    = document.getElementById('sucesso-feedback');
+
+      if (!comentario.value.trim()) {
+        document.title = 'Campo comentário obrigatório. Por favor, corrija. | ' + tituloOriginal;
+        marcarErro(comentario, erroComent, 'O comentário é obrigatório.');
+        comentario.focus();
+      } else {
+        document.title = tituloOriginal;
+        limparErro(comentario, erroComent);
+        sucesso.style.display = 'block';
+        this.reset();
+        sucesso.focus();
+      }
+    });
+
+    /* Restaura título ao corrigir campos (feedback em tempo real) */
+    ['nome-cadastro','email-cadastro','consentimento'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', () => {
+        document.title = tituloOriginal;
+      });
+    });
+  </script>
+  
+
+</body>
+</html>
