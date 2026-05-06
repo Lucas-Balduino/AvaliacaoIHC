@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Página de apresentação do Projeto Integrador I – UniCEUB. Dashboard sobre o mercado de trabalho doméstico informal no Brasil." />
+  <title>Sobre o Projeto | Dashboard – Trabalho Doméstico Informal | Projeto Integrador I – UniCEUB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo principal</a>
+
+  <div class="layout">
+
+    <!-- ══ SIDEBAR ══ -->
+    <aside class="sidebar" aria-label="Painel lateral de navegação">
+
+      <header class="sidebar-header">
+        <p class="project-title">Projeto Integrador I</p>
+        <p class="project-subtitle">Dashboard Protótipo v1.0</p>
+      </header>
+
+      <nav class="sidebar-nav" aria-label="Menu principal do dashboard">
+        <ul role="list">
+          <li>
+            <a href="index.html" class="nav-item">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="formularios.html" class="nav-item">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 10h8M8 14h4"/></svg>
+              Formulários
+            </a>
+          </li>
+          <li>
+            <a href="sobre.html" class="nav-item" aria-current="page">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Sobre o Projeto
+            </a>
+          </li>
+          <li>
+            <a href="#diaristas" class="nav-item">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              Diaristas
+            </a>
+          </li>
+          <li>
+            <a href="#contratantes" class="nav-item">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="3"/><circle cx="16" cy="9" r="2"/><path d="M2 20c0-3 3-5 7-5s7 2 7 5"/><path d="M18 14c2 0 4 1.3 4 4"/></svg>
+              Contratantes
+            </a>
+          </li>
+          <li>
+            <a href="#fontes" class="nav-item">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="17" width="18" height="4" rx="1"/></svg>
+              Fontes de Dados
+            </a>
+          </li>
+          <li>
+            <a href="#pesquisa" class="nav-item">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+              Pesquisa Local
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <section class="filters-section" aria-labelledby="filtros-titulo-sobre">
+        <p class="filters-heading" aria-hidden="true">Filtros de Dados</p>
+        <h2 id="filtros-titulo-sobre" class="sr-only">Filtros de Dados</h2>
+        <fieldset class="filters-fieldset">
+          <legend class="sr-only">Selecionar fontes de dados a exibir</legend>
+          <label class="filter-label ibge">
+            <input type="checkbox" name="filtro-ibge" checked aria-describedby="desc-ibge-sobre" />
+            IBGE/IPEA
+          </label>
+          <span id="desc-ibge-sobre" class="sr-only">Dados da PNAD Contínua do IBGE</span>
+          <label class="filter-label local">
+            <input type="checkbox" name="filtro-local" aria-describedby="desc-local-sobre" />
+            Local Research
+          </label>
+          <span id="desc-local-sobre" class="sr-only">Dados da pesquisa de campo do grupo</span>
+        </fieldset>
+      </section>
+
+      <section class="filters-section" aria-labelledby="filtros-titulo">
+        <p class="filters-heading" aria-hidden="true">Autores</p>
+
+        <p class="project-title">Lucas Gonçalves Balduino</p>
+        <p class="project-subtitle">Product Owner</p>
+      </section>
+
+      <div class="sidebar-footer">
+        <div class="ceub-logo" role="img" aria-label="CEUB – Centro Universitário de Brasília">
+          <img src="https://institucional.uniceub.br/hubfs/BrandCenter/img/logo-ceub-colorida-02.png" alt="Logo institucional UniCEUB" class="ceub-logo">
+        </div>
+        <button
+          type="button"
+          class="btn-sidebar"
+          aria-pressed="false"
+          aria-label="Alternar entre tema claro e escuro"
+          onclick="this.setAttribute('aria-pressed', this.getAttribute('aria-pressed')==='false' ? 'true' : 'false')"
+        >
+          <svg width="14" height="14" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          Theme Toggle
+        </button>
+        <button type="button" class="btn-export">
+          <svg width="13" height="13" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+          Export Report
+        </button>
+      </div>
+
+    </aside><!-- /aside.sidebar -->
+
+
+    <!-- ══ MAIN ══ -->
+    <main class="main-content" id="conteudo-principal" aria-labelledby="h1-sobre">
+
+      <!-- ── Seção 1: Início / Hero ── -->
+      <section id="home" aria-labelledby="h1-sobre">
+        <div class="sobre-hero">
+          <span class="hero-eyebrow">Projeto Integrador I — UniCEUB · ODS 8 ONU</span>
+          <h1 id="h1-sobre">Tecnologia a serviço da dignidade no trabalho.</h1>
+          <p>
+            Este projeto utiliza a Ciência da Computação para enfrentar um dos maiores desafios sociais
+            do Brasil: a precarização do serviço doméstico. Por meio de inteligência de dados, transformamos
+            estatísticas em uma ferramenta de conscientização e formalização, alinhando inovação técnica ao
+            Objetivo de Desenvolvimento Sustentável 8 da ONU.
+          </p>
+          <a href="index.html" class="btn-primary">
+            <svg width="14" height="14" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Explorar Dashboard
+          </a>
+        </div>
+      </section>
+
+      <!-- ── Seção 2: O Desafio ── -->
+      <section id="problema" class="sobre-section" aria-labelledby="h2-problema">
+        <p class="section-eyebrow">O Desafio</p>
+        <h2 id="h2-problema">O impacto da informalidade.</h2>
+        <p>
+          A realidade do mercado de limpeza residencial é marcada por números alarmantes. No Brasil,
+          a taxa de informalidade no setor doméstico atinge 75%. Essa falta de registro resulta em
+          insegurança financeira para a profissional e ausência de garantias jurídicas para quem contrata.
+        </p>
+
+        <ul class="highlight-list" aria-label="Destaques de pesquisa">
+          <li>85,7% das profissionais ainda dependem exclusivamente de indicações para obter trabalho.</li>
+          <li>A informalidade cria uma falsa percepção de lucro imediato, ignorando a ausência de proteção social a longo prazo.</li>
+        </ul>
+
+        <div class="stat-row" style="margin-top: 24px;" role="list" aria-label="Estatísticas principais">
+          <div class="stat-card accent" role="listitem">
+            <p class="stat-number">75%</p>
+            <p class="stat-label">Taxa de informalidade no setor doméstico brasileiro</p>
+          </div>
+          <div class="stat-card" role="listitem">
+            <p class="stat-number">85,7%</p>
+            <p class="stat-label">Profissionais dependem de indicações para conseguir trabalho</p>
+          </div>
+          <div class="stat-card green" role="listitem">
+            <p class="stat-number">42,9%</p>
+            <p class="stat-label">Das profissionais na amostra local possuem MEI ativo</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Seção 3: Parceria Estratégica ── -->
+      <section id="parceria" class="sobre-section" aria-labelledby="h2-parceria">
+        <p class="section-eyebrow">Parceria Estratégica</p>
+        <h2 id="h2-parceria">O papel do SEBRAE e a formalização via MEI.</h2>
+        <p>
+          Identificamos que a "espinha dorsal" para a solução deste problema é o Microempreendedor
+          Individual (MEI). Em parceria com o SEBRAE, o projeto busca validar indicadores técnicos para
+          incentivar a formalização. O objetivo é transformar a profissional de "diarista informal" em
+          uma microempreendedora com direitos garantidos, como previdência, segurança jurídica e acesso
+          ao sistema bancário.
+        </p>
+      </section>
+
+      <!-- ── Seção 4: Engenharia de Dados ── -->
+      <section id="metodologia" class="sobre-section" aria-labelledby="h2-metodologia">
+        <p class="section-eyebrow">Engenharia de Dados</p>
+        <h2 id="h2-metodologia">Transformando dados brutos em inteligência.</h2>
+        <p>
+          Utilizamos um processo rigoroso de ETL (Extração, Transformação e Carga). Cruzamos dados
+          primários coletados localmente com microdados oficiais do IBGE (PNAD Contínua).
+        </p>
+
+        <div class="arch-steps" aria-label="Arquitetura Técnica">
+          <div class="arch-step">
+            <div class="step-badge" aria-hidden="true">01</div>
+            <div class="step-text">
+              <strong>Extração</strong>
+              <span>Coleta via instrumentos de pesquisa e bases oficiais (Tabela 7197 - IBGE).</span>
+            </div>
+          </div>
+          <div class="arch-step">
+            <div class="step-badge" aria-hidden="true">02</div>
+            <div class="step-text">
+              <strong>Tratamento</strong>
+              <span>Limpeza de dados nulos e padronização estatística utilizando a linguagem Python e a biblioteca Pandas.</span>
+            </div>
+          </div>
+          <div class="arch-step">
+            <div class="step-badge" aria-hidden="true">03</div>
+            <div class="step-text">
+              <strong>Análise de Anomalias</strong>
+              <span>Investigamos por que, em nossa amostra local, 42,9% das profissionais possuem MEI ativo, número que desafia a média nacional de informalidade.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Seção 5: O Produto ── -->
+      <section id="dashboard" class="sobre-section" aria-labelledby="h2-produto">
+        <p class="section-eyebrow">O Produto</p>
+        <h2 id="h2-produto">Dashboard Analítico (MVP).</h2>
+        <p>
+          Nossa solução visual é um Dashboard interativo desenvolvido em Streamlit. Com uma interface
+          minimalista inspirada no design "Apple Dark Mode", a ferramenta permite filtrar dados por
+          faixa etária, escolaridade e região, facilitando a tomada de decisão estratégica para órgãos
+          como a FENATRAD e o SEBRAE.
+        </p>
+
+        <ul class="feature-list" aria-label="Funcionalidades do Dashboard">
+          <li>Mapa de demanda regional.</li>
+          <li>Comparativo de renda: Informalidade vs. Formalização.</li>
+          <li>Monitoramento de ociosidade de agenda.</li>
+        </ul>
+      </section>
+
+      <!-- ── Seção 6: Gestão de Projeto ── -->
+      <section id="gestao" class="sobre-section" aria-labelledby="h2-gestao">
+        <p class="section-eyebrow">Gestão de Projeto</p>
+        <h2 id="h2-gestao">Metodologia Ágil e Caminho Crítico.</h2>
+        <p>
+          O desenvolvimento foi estruturado em Épicos que abrangem desde a imersão microeconômica até
+          a defesa final do software.
+        </p>
+
+        <ul class="milestone-list" aria-label="Marcos de Entrega">
+          <li class="milestone-item">
+            <div class="milestone-dot" aria-hidden="true"></div>
+            <div class="milestone-text">
+              <strong>Pesquisa e Imersão</strong>
+              <span>Conclusão da base de dados com 120 participantes.</span>
+            </div>
+          </li>
+          <li class="milestone-item">
+            <div class="milestone-dot" aria-hidden="true"></div>
+            <div class="milestone-text">
+              <strong>Prototipagem</strong>
+              <span>Validação IHC via HTML/CSS e Figma.</span>
+            </div>
+          </li>
+          <li class="milestone-item">
+            <div class="milestone-dot" aria-hidden="true"></div>
+            <div class="milestone-text">
+              <strong>Defesa Oficial</strong>
+              <span>Apresentação final agendada para 26 de junho de 2026.</span>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ── Seção 7: Equipe ── -->
+      <section id="equipe" class="sobre-section" aria-labelledby="h2-equipe">
+        <p class="section-eyebrow">Equipe</p>
+        <h2 id="h2-equipe">Os nomes por trás da solução.</h2>
+
+        <div class="team-grid" role="list">
+          <article class="team-card" role="listitem">
+            <div class="team-avatar" aria-hidden="true">LG</div>
+            <p class="team-name">Lucas Gonçalves Balduino</p>
+            <p class="team-role">Product Owner &amp; Engenheiro de Dados</p>
+          </article>
+          <article class="team-card" role="listitem">
+            <div class="team-avatar" aria-hidden="true">JV</div>
+            <p class="team-name">João Victor Rios</p>
+            <p class="team-role">Desenvolvedor Full-stack</p>
+          </article>
+          <article class="team-card" role="listitem">
+            <div class="team-avatar" aria-hidden="true">AM</div>
+            <p class="team-name">Alexsander Motta</p>
+            <p class="team-role">Analista de BI</p>
+          </article>
+          <article class="team-card" role="listitem">
+            <div class="team-avatar" aria-hidden="true">BV</div>
+            <p class="team-name">Beatriz Vasconcellos Espindola</p>
+            <p class="team-role">Pesquisadora UX</p>
+          </article>
+          <article class="team-card" role="listitem">
+            <div class="team-avatar" aria-hidden="true">VI</div>
+            <p class="team-name">Vinicius Inoue</p>
+            <p class="team-role">Analista de Qualidade</p>
+          </article>
+          <article class="team-card" role="listitem">
+            <div class="team-avatar advisor" aria-hidden="true">KV</div>
+            <p class="team-name">Profa. Kadidja Valéria</p>
+            <p class="team-role">Orientadora Estratégica</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ══ RODAPÉ ══ -->
+<footer class="site-footer" aria-label="Rodapé do site">
+
+  <div class="footer-grid">
+
+    <!-- Coluna 1: Identidade do Projeto e Instituição -->
+    <div class="footer-brand">
+      <img
+        class="footer-ceub-logo"
+        src="https://institucional.uniceub.br/hubfs/BrandCenter/img/logo-ceub-colorida-02.png"
+        alt="Logo institucional UniCEUB – Centro Universitário de Brasília"
+      >
+      <p class="footer-project-name">Dashboard — Trabalho Doméstico Informal</p>
+      <p class="footer-institution">
+        Centro Universitário de Brasília · Ciência da Computação<br>
+        Orientação: Profa. Kadidja Valéria
+      </p>
+      <span class="footer-badge" aria-label="Projeto Integrador I">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M2 20h20M6 20V10l6-8 6 8v10"/></svg>
+        Projeto Integrador I
+      </span>
+      <p class="footer-data-note">
+        Dados compilados da PNAD Contínua — IBGE &amp; Pesquisa de Campo Local 2026.
+        Todos os direitos reservados.
+      </p>
+    </div>
+
+    <!-- Coluna 2: Repositórios -->
+    <div class="footer-col">
+      <p class="footer-col-heading">Repositórios</p>
+      <ul class="footer-link-list">
+        <li>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77A5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          <a href="https://github.com/Lucas-Balduino/ProjetoIntegrador">Projeto Integrador</a>
+        </li>
+        <li>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77A5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          <a href="https://github.com/Lucas-Balduino/AvaliacaoIHC">Atividades IHC</a>
+        </li>
+        <li>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          <a href="https://github.com/Lucas-Balduino">github.com/Lucas-Balduino</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Coluna 3: Navegação + Autor -->
+    <div class="footer-col">
+      <p class="footer-col-heading">Navegação</p>
+      <ul class="footer-link-list">
+        <li>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          <a href="index.html">Dashboard</a>
+        </li>
+        <li>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <a href="sobre.html">Sobre o Projeto</a>
+        </li>
+        <li>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 10h8M8 14h4"/></svg>
+          <a href="formularios.html">Formulários</a>
+        </li>
+      </ul>
+
+      <p class="footer-col-heading" style="margin-top: 20px;">Autor</p>
+      <ul class="footer-link-list">
+        <li>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span class="footer-author-name">Lucas Gonçalves Balduino</span>
+        </li>
+      </ul>
+    </div>
+
+  </div><!-- /footer-grid -->
+
+  <hr class="footer-divider" aria-hidden="true">
+
+  <div class="footer-bottom">
+    <p class="footer-copyright">
+      © 2026 Projeto Integrador I — UniCEUB · Ciência da Computação. Todos os direitos reservados.
+    </p>
+    <span class="footer-ods-badge" aria-label="Alinhado ao ODS 8 da ONU: Trabalho Decente e Crescimento Econômico">
+      <span class="footer-ods-dot" aria-hidden="true"></span>
+      ODS 8 — Trabalho Decente e Crescimento Econômico
+    </span>
+  </div>
+
+</footer>
+
+
+    </main>
+
+  </div><!-- /layout -->
+
+</body>
+</html>
