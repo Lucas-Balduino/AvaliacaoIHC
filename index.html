@@ -194,15 +194,30 @@
 
             <!-- Gráfico 1: 31,5% Geral -->
             <figure class="donut-figure">
-              <canvas
-                id="chart-informalidade-geral"
-                class="donut-canvas"
+              <svg
+                class="donut-svg"
+                viewBox="0 0 120 120"
                 role="img"
-                aria-label="Gráfico de rosca: 31,5% da força de trabalho nacional está em regime informal."
-              ></canvas>
-              <p id="chart-readout-geral" class="chart-readout" aria-live="polite">
-                Passe o mouse sobre o gráfico para ouvir os valores.
-              </p>
+                aria-labelledby="titulo-donut-geral"
+              >
+                <title id="titulo-donut-geral">
+                  Gráfico de rosca: 31,5% da força de trabalho nacional está em regime informal.
+                </title>
+                <!-- Trilha (fundo) -->
+                <circle cx="60" cy="60" r="45" fill="none" stroke="#dce8f5" stroke-width="13"/>
+                <!-- Progresso: C=282.74, 31.5% → 89.06 -->
+                <circle
+                  cx="60" cy="60" r="45"
+                  fill="none"
+                  stroke="#1a5fa8"
+                  stroke-width="13"
+                  stroke-dasharray="89.06 193.68"
+                  stroke-linecap="butt"
+                  transform="rotate(-90 60 60)"
+                />
+                <text x="60" y="58" text-anchor="middle" class="donut-value">31.5%</text>
+                <text x="60" y="72" text-anchor="middle" class="donut-label-text">GERAL</text>
+              </svg>
 
               <figcaption>
                 Representação da força de trabalho nacional em regimes informais.
@@ -221,15 +236,29 @@
 
             <!-- Gráfico 2: 75% Doméstico -->
             <figure class="donut-figure">
-              <canvas
-                id="chart-informalidade-domestico"
-                class="donut-canvas"
+              <svg
+                class="donut-svg"
+                viewBox="0 0 120 120"
                 role="img"
-                aria-label="Gráfico de rosca: 75% dos trabalhadores domésticos estão em regime informal."
-              ></canvas>
-              <p id="chart-readout-domestico" class="chart-readout" aria-live="polite">
-                Passe o mouse sobre o gráfico para ouvir os valores.
-              </p>
+                aria-labelledby="titulo-donut-domestico"
+              >
+                <title id="titulo-donut-domestico">
+                  Gráfico de rosca: 75% dos trabalhadores domésticos estão em regime informal.
+                </title>
+                <circle cx="60" cy="60" r="45" fill="none" stroke="#dce8f5" stroke-width="13"/>
+                <!-- 75% → 212.06 -->
+                <circle
+                  cx="60" cy="60" r="45"
+                  fill="none"
+                  stroke="#1a5fa8"
+                  stroke-width="13"
+                  stroke-dasharray="212.06 70.68"
+                  stroke-linecap="butt"
+                  transform="rotate(-90 60 60)"
+                />
+                <text x="60" y="58" text-anchor="middle" class="donut-value">75%</text>
+                <text x="60" y="72" text-anchor="middle" class="donut-label-text">DOMÉSTICO</text>
+              </svg>
 
               <figcaption>
                 A informalidade atinge níveis críticos no setor de trabalho doméstico.
@@ -262,16 +291,43 @@
             Legenda como tabela de dados estruturados
             Pontos de cor com aria-hidden (cor não é o único identificador)
           -->
-          <figure class="mei-figure" aria-label="Gráfico de rosca: Status MEI">
-            <canvas
-              id="chart-status-mei"
-              class="mei-canvas"
+          <figure class="mei-figure" aria-labelledby="titulo-mei-chart">
+            <svg
+              class="mei-svg"
+              viewBox="0 0 120 120"
               role="img"
-              aria-label="Gráfico de rosca: Status MEI — 62% não possui, 28% possui, 10% já teve."
-            ></canvas>
-            <p id="chart-readout-mei" class="chart-readout" aria-live="polite">
-              Passe o mouse sobre o gráfico para ouvir os valores.
-            </p>
+              aria-labelledby="titulo-mei-chart"
+            >
+              <title id="titulo-mei-chart">
+                Gráfico de rosca: Status MEI — 62% não possui, 28% possui, 10% já teve.
+              </title>
+              <!-- Trilha -->
+              <circle cx="60" cy="60" r="42" fill="none" stroke="#f0f4f8" stroke-width="16"/>
+              <!-- Segmento 1 – Não Possui 62%: 264.5*0.62=163.99 -->
+              <circle
+                cx="60" cy="60" r="42"
+                fill="none" stroke="#1a5fa8" stroke-width="16"
+                stroke-dasharray="163.99 99.90"
+                stroke-dashoffset="0"
+                transform="rotate(-90 60 60)"
+              />
+              <!-- Segmento 2 – Possui 28%: 264.5*0.28=74.06 -->
+              <circle
+                cx="60" cy="60" r="42"
+                fill="none" stroke="#b8cee8" stroke-width="16"
+                stroke-dasharray="74.06 189.83"
+                stroke-dashoffset="-163.99"
+                transform="rotate(-90 60 60)"
+              />
+              <!-- Segmento 3 – Já Teve 10%: 264.5*0.10=26.45 -->
+              <circle
+                cx="60" cy="60" r="42"
+                fill="none" stroke="#dce8f5" stroke-width="16"
+                stroke-dasharray="26.45 237.44"
+                stroke-dashoffset="-238.05"
+                transform="rotate(-90 60 60)"
+              />
+            </svg>
 
             <figcaption>
               <!--
@@ -491,16 +547,39 @@
             Gráfico de barras com <figure>, SVG role="img" e <title>
             Tabela de dados oculta (sr-only) para leitores de tela
           -->
-          <figure aria-label="Gráfico de barras de canal de aquisição">
-            <canvas
-              id="chart-canal-aquisicao"
-              class="canal-canvas"
+          <figure aria-labelledby="titulo-canal-chart">
+            <svg
+              class="canal-chart-svg"
+              viewBox="0 0 280 150"
               role="img"
-              aria-label="Gráfico de barras: Canais de aquisição de clientes — Indicação 85,7% e Outros 14,3%."
-            ></canvas>
-            <p id="chart-readout-canal" class="chart-readout" aria-live="polite">
-              Passe o mouse sobre as barras para ouvir os valores.
-            </p>
+              aria-labelledby="titulo-canal-chart"
+            >
+              <title id="titulo-canal-chart">
+                Gráfico de barras: Canais de aquisição de clientes — Indicação 85,7% e Outros 14,3%.
+              </title>
+
+              <!-- Linhas de grade -->
+              <line x1="40" y1="10"  x2="270" y2="10"  stroke="#dde6ef" stroke-width="1"/>
+              <line x1="40" y1="47"  x2="270" y2="47"  stroke="#dde6ef" stroke-width="1"/>
+              <line x1="40" y1="84"  x2="270" y2="84"  stroke="#dde6ef" stroke-width="1"/>
+              <line x1="40" y1="121" x2="270" y2="121" stroke="#dde6ef" stroke-width="1"/>
+
+              <!-- Rótulos eixo Y -->
+              <text x="35" y="13"  text-anchor="end" class="chart-axis-label">100%</text>
+              <text x="35" y="50"  text-anchor="end" class="chart-axis-label">75%</text>
+              <text x="35" y="87"  text-anchor="end" class="chart-axis-label">50%</text>
+              <text x="35" y="124" text-anchor="end" class="chart-axis-label">25%</text>
+
+              <!-- Barra: Indicação 85.7% → altura ≈ 103px de 121px base -->
+              <rect x="60"  y="17.9" width="70" height="103.1" fill="#1a5fa8" rx="5"/>
+
+              <!-- Barra: Outros 14.3% → altura ≈ 17.3px -->
+              <rect x="175" y="103.7" width="70" height="17.3" fill="#b8cee8" rx="5"/>
+
+              <!-- Rótulos eixo X -->
+              <text x="95"  y="145" text-anchor="middle" class="chart-bar-label">Indicação</text>
+              <text x="210" y="145" text-anchor="middle" class="chart-bar-label">Outros</text>
+            </svg>
 
             <!-- Tabela oculta para leitores de tela -->
             <table class="sr-only">
@@ -624,7 +703,6 @@
 
   </div><!-- /layout -->
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js" defer></script>
 </body>
 </html>
