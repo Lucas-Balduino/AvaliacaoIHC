@@ -1038,11 +1038,6 @@ body {
   --accent-pink: #e0186b;
 }
 
-.ceub-logo {
-  width: 100px;
-  filter: none;
-  opacity: 1;
-}
 
 .main-content {
   gap: 24px;

@@ -278,6 +278,7 @@
           responsive: true,
           maintainAspectRatio: true,
           cutout: "76%",
+          layout: { padding: 8 },
           animation: animDefaults,
           plugins: {
             legend: { display: false },
@@ -318,6 +319,7 @@
           responsive: true,
           maintainAspectRatio: true,
           cutout: "76%",
+          layout: { padding: 8 },
           animation: animDefaults,
           plugins: {
             legend: { display: false },
@@ -358,6 +360,7 @@
           responsive: true,
           maintainAspectRatio: true,
           cutout: "58%",
+          layout: { padding: 8 },
           animation: animDefaults,
           plugins: {
             legend: { display: false },
