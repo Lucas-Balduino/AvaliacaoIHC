@@ -191,7 +191,348 @@
     });
   }
 
+  /* ═══════════════════════════════════════════════
+     CHART.JS — Inicialização dos gráficos
+     Substitui os SVGs estáticos por gráficos
+     interativos com tooltips e animações.
+  ═══════════════════════════════════════════════ */
+  function initCharts() {
+    if (typeof Chart === "undefined") return;
+
+    /* ─── Cores do design system ─── */
+    const BLUE_MID = "#1a5fa8";
+    const BLUE_LIGHT = "#b8cee8";
+    const BLUE_PALE = "#dce8f5";
+    const TEXT_PRIMARY = "#0d1f36";
+    const TEXT_MUTED = "#8ea8bf";
+
+    /* ─── Plugin: texto central nos donuts ─── */
+    const centerTextPlugin = {
+      id: "centerText",
+      afterDraw(chart) {
+        const { centerText } = chart.config.options.plugins || {};
+        if (!centerText || !centerText.display) return;
+
+        const { ctx, chartArea: { top, bottom, left, right } } = chart;
+        const cx = (left + right) / 2;
+        const cy = (top + bottom) / 2;
+        const size = Math.min(right - left, bottom - top);
+
+        ctx.save();
+
+        /* Valor principal */
+        ctx.font = `800 ${size * 0.2}px Inter, sans-serif`;
+        ctx.fillStyle = centerText.color || BLUE_MID;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(centerText.value || "", cx, cy - size * 0.04);
+
+        /* Rótulo abaixo */
+        if (centerText.label) {
+          ctx.font = `600 ${size * 0.075}px Inter, sans-serif`;
+          ctx.fillStyle = TEXT_MUTED;
+          ctx.letterSpacing = "0.08em";
+          ctx.fillText(centerText.label, cx, cy + size * 0.11);
+        }
+
+        ctx.restore();
+      },
+    };
+
+    Chart.register(centerTextPlugin);
+
+    /* ─── Configuração padrão dos tooltips ─── */
+    const tooltipDefaults = {
+      backgroundColor: "rgba(15, 29, 46, 0.92)",
+      titleFont: { family: "Inter, sans-serif", size: 12, weight: "700" },
+      bodyFont: { family: "Inter, sans-serif", size: 12 },
+      padding: 10,
+      cornerRadius: 8,
+      displayColors: true,
+      boxPadding: 4,
+    };
+
+    /* ─── Animação padrão ─── */
+    const animDefaults = {
+      duration: 900,
+      easing: "easeOutQuart",
+    };
+
+    /* ═════════════════════════════════════
+       1) Donut — Informalidade Geral (31,5%)
+    ═════════════════════════════════════ */
+    const ctxGeral = doc.getElementById("chart-informalidade-geral");
+    if (ctxGeral) {
+      new Chart(ctxGeral, {
+        type: "doughnut",
+        data: {
+          labels: ["Informal", "Formal"],
+          datasets: [{
+            data: [31.5, 68.5],
+            backgroundColor: [BLUE_MID, BLUE_PALE],
+            borderWidth: 0,
+            hoverOffset: 6,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          cutout: "62%",
+          animation: animDefaults,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              ...tooltipDefaults,
+              callbacks: {
+                label: (ctx) => `${ctx.label}: ${ctx.parsed}%`,
+              },
+            },
+            centerText: {
+              display: true,
+              value: "31,5%",
+              label: "GERAL",
+              color: BLUE_MID,
+            },
+          },
+        },
+      });
+    }
+
+    /* ═════════════════════════════════════
+       2) Donut — Informalidade Doméstico (75%)
+    ═════════════════════════════════════ */
+    const ctxDomestico = doc.getElementById("chart-informalidade-domestico");
+    if (ctxDomestico) {
+      new Chart(ctxDomestico, {
+        type: "doughnut",
+        data: {
+          labels: ["Informal", "Formal"],
+          datasets: [{
+            data: [75, 25],
+            backgroundColor: [BLUE_MID, BLUE_PALE],
+            borderWidth: 0,
+            hoverOffset: 6,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          cutout: "62%",
+          animation: animDefaults,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              ...tooltipDefaults,
+              callbacks: {
+                label: (ctx) => `${ctx.label}: ${ctx.parsed}%`,
+              },
+            },
+            centerText: {
+              display: true,
+              value: "75%",
+              label: "DOMÉSTICO",
+              color: BLUE_MID,
+            },
+          },
+        },
+      });
+    }
+
+    /* ═════════════════════════════════════
+       3) Donut — Status MEI (62/28/10)
+    ═════════════════════════════════════ */
+    const ctxMei = doc.getElementById("chart-mei");
+    if (ctxMei) {
+      new Chart(ctxMei, {
+        type: "doughnut",
+        data: {
+          labels: ["Não Possui", "Possui", "Já Teve"],
+          datasets: [{
+            data: [62, 28, 10],
+            backgroundColor: [BLUE_MID, BLUE_LIGHT, BLUE_PALE],
+            borderWidth: 0,
+            hoverOffset: 6,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          cutout: "58%",
+          animation: animDefaults,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              ...tooltipDefaults,
+              callbacks: {
+                label: (ctx) => `${ctx.label}: ${ctx.parsed}%`,
+              },
+            },
+            centerText: { display: false },
+          },
+        },
+      });
+    }
+
+    /* ═════════════════════════════════════
+       4) Barras Horizontais — Horas Semanais
+    ═════════════════════════════════════ */
+    const ctxHoras = doc.getElementById("chart-horas");
+    if (ctxHoras) {
+      new Chart(ctxHoras, {
+        type: "bar",
+        data: {
+          labels: ["Formal", "Informal"],
+          datasets: [{
+            data: [30, 40],
+            backgroundColor: [BLUE_MID, BLUE_LIGHT],
+            borderRadius: 6,
+            barThickness: 18,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: "y",
+          animation: animDefaults,
+          scales: {
+            x: {
+              max: 50,
+              ticks: {
+                callback: (v) => `${v}h`,
+                font: { family: "Inter, sans-serif", size: 10 },
+                color: TEXT_MUTED,
+              },
+              grid: { color: "rgba(221,230,239,0.5)" },
+            },
+            y: {
+              ticks: {
+                font: { family: "Inter, sans-serif", size: 11, weight: "600" },
+                color: TEXT_PRIMARY,
+              },
+              grid: { display: false },
+            },
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              ...tooltipDefaults,
+              callbacks: {
+                label: (ctx) => `${ctx.parsed.x}h/semana`,
+              },
+            },
+          },
+        },
+      });
+    }
+
+    /* ═════════════════════════════════════
+       5) Barras Horizontais — Salário Mensal
+    ═════════════════════════════════════ */
+    const ctxSalario = doc.getElementById("chart-salario");
+    if (ctxSalario) {
+      new Chart(ctxSalario, {
+        type: "bar",
+        data: {
+          labels: ["Formal", "Informal"],
+          datasets: [{
+            data: [2450, 1120],
+            backgroundColor: [BLUE_MID, BLUE_LIGHT],
+            borderRadius: 6,
+            barThickness: 18,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: "y",
+          animation: animDefaults,
+          scales: {
+            x: {
+              max: 3000,
+              ticks: {
+                callback: (v) =>
+                  `R$ ${v.toLocaleString("pt-BR")}`,
+                font: { family: "Inter, sans-serif", size: 10 },
+                color: TEXT_MUTED,
+              },
+              grid: { color: "rgba(221,230,239,0.5)" },
+            },
+            y: {
+              ticks: {
+                font: { family: "Inter, sans-serif", size: 11, weight: "600" },
+                color: TEXT_PRIMARY,
+              },
+              grid: { display: false },
+            },
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              ...tooltipDefaults,
+              callbacks: {
+                label: (ctx) =>
+                  `R$ ${ctx.parsed.x.toLocaleString("pt-BR")}`,
+              },
+            },
+          },
+        },
+      });
+    }
+
+    /* ═════════════════════════════════════
+       6) Barras Verticais — Canal de Aquisição
+    ═════════════════════════════════════ */
+    const ctxCanal = doc.getElementById("chart-canal");
+    if (ctxCanal) {
+      new Chart(ctxCanal, {
+        type: "bar",
+        data: {
+          labels: ["Indicação", "Outros"],
+          datasets: [{
+            data: [85.7, 14.3],
+            backgroundColor: [BLUE_MID, BLUE_LIGHT],
+            borderRadius: 6,
+            barThickness: 52,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: animDefaults,
+          scales: {
+            y: {
+              max: 100,
+              ticks: {
+                callback: (v) => `${v}%`,
+                font: { family: "Inter, sans-serif", size: 10 },
+                color: TEXT_MUTED,
+              },
+              grid: { color: "rgba(221,230,239,0.5)" },
+            },
+            x: {
+              ticks: {
+                font: { family: "Inter, sans-serif", size: 11, weight: "600" },
+                color: TEXT_PRIMARY,
+              },
+              grid: { display: false },
+            },
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              ...tooltipDefaults,
+              callbacks: {
+                label: (ctx) => `${ctx.label}: ${ctx.parsed.y}%`,
+              },
+            },
+          },
+        },
+      });
+    }
+  }
+
   setupThemeToggle();
   setupDashboardFilters();
   setupFormValidation();
+  initCharts();
 })();
