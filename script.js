@@ -277,7 +277,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: true,
-          cutout: "62%",
+          cutout: "76%",
           animation: animDefaults,
           plugins: {
             legend: { display: false },
@@ -317,7 +317,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: true,
-          cutout: "62%",
+          cutout: "76%",
           animation: animDefaults,
           plugins: {
             legend: { display: false },
@@ -492,7 +492,7 @@
             data: [85.7, 14.3],
             backgroundColor: [BLUE_MID, BLUE_LIGHT],
             borderRadius: 6,
-            barThickness: 52,
+            barThickness: 150,
           }],
         },
         options: {

@@ -887,7 +887,7 @@ body {
 
 /* Donut charts: square aspect-ratio */
 .chart-container--donut {
-  max-width: 180px;
+  max-width: 210px;
   aspect-ratio: 1;
 }
 
