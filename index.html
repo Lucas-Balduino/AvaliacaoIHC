@@ -1,580 +1,1281 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Dashboard de análise do mercado de Trabalho Doméstico Informal no Brasil. Projeto Integrador I – UniCEUB." />
-  <title>Dashboard – Trabalho Doméstico Informal | Projeto Integrador I – UniCEUB</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portal de navegação das atividades de Interação Humano-Computador (IHC) — UniCEUB. Acesse a avaliação final com os desafios das UAs e o protótipo de dashboard do Projeto Integrador I.">
+  <title>IHC — Portal de Atividades | Lucas Balduino · UniCEUB</title>
+
+  <!--
+    ══════════════════════════════════════════════
+    ACESSIBILIDADE — Prática 1: Fontes Legíveis
+    Atkinson Hyperlegible: projetada pela Braille
+    Institute para maximizar legibilidade, incluindo
+    pessoas com baixa visão.
+    Bebas Neue: títulos display com alta distinção.
+    JetBrains Mono: detalhes técnicos monoespaçados.
+    ══════════════════════════════════════════════
+  -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+  <style>
+    /* ═══════════════════════════════════════════
+       DESIGN TOKENS
+       Paleta escura de alto contraste.
+       Mesmas variáveis de ihc-desafios.html para
+       manter coesão visual no repositório.
+       ═══════════════════════════════════════════ */
+    :root {
+      --bg: #0b0d14;
+      --surface: #13151f;
+      --surface2: #1c1f2e;
+      --surface3: #252840;
+      --border: #2e3148;
+      --text: #e8e5df;
+      --muted: #7a7d99;
+
+      /* Cores das Unidades de Aprendizagem */
+      --ua1: #ff9f43;
+      --ua2: #54a0ff;
+      --ua3: #1dd1a1;
+      --ua4: #ff6b9d;
+
+      /* Cor do Projeto Integrador */
+      --pi: #38b6ff;
+
+      /* Espaçamentos reutilizáveis */
+      --section-pad: clamp(3rem, 8vw, 6rem) 2rem;
+    }
+
+    /* ═══════════════════════════════════════════
+       RESET & BASE
+       ═══════════════════════════════════════════ */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Atkinson Hyperlegible', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ═══════════════════════════════════════════
+       ACESSIBILIDADE — Prática 2: Skip Link
+       (WCAG 2.4.1) Permite usuários de teclado
+       e leitores de tela pularem diretamente ao
+       conteúdo principal, sem percorrer navegação.
+       ═══════════════════════════════════════════ */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 1rem;
+      z-index: 999;
+      padding: 0.75rem 1.5rem;
+      background: var(--ua2);
+      color: #fff;
+      font-weight: 700;
+      border-radius: 0 0 8px 8px;
+      text-decoration: none;
+      transition: top 0.2s;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+
+    /* ═══════════════════════════════════════════
+       ACESSIBILIDADE — Prática 3: Focus Visível
+       (WCAG 2.4.7) Indicador de foco customizado
+       de alto contraste para navegação por teclado.
+       ═══════════════════════════════════════════ */
+    :focus-visible {
+      outline: 2px solid var(--ua2);
+      outline-offset: 3px;
+    }
+
+    /* ═══════════════════════════════════════════
+       ACESSIBILIDADE — Prática 4: Reduced Motion
+       (WCAG 2.3.3) Desativa todas as animações e
+       transições para usuários que preferem
+       movimento reduzido nas configurações do SO.
+       ═══════════════════════════════════════════ */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      html { scroll-behavior: auto; }
+    }
+
+    /* ═══════════════════════════════════════════
+       ACESSIBILIDADE — Prática 5: SR-Only
+       Texto visualmente oculto mas acessível a
+       leitores de tela para contexto extra.
+       ═══════════════════════════════════════════ */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ─────────────────────────────────────────
+       HERO
+       ───────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      position: relative;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(84,160,255,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 20% 80%, rgba(29,209,161,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 80% 70%, rgba(255,107,157,0.05) 0%, transparent 60%),
+        var(--bg);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.4em;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      position: relative;
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.2rem, 10vw, 7.5rem);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title span {
+      display: block;
+      background: linear-gradient(135deg, #54a0ff 0%, #1dd1a1 50%, #ff9f43 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 540px;
+      margin: 0 auto 2.5rem;
+      position: relative;
+      line-height: 1.8;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.6rem 1.4rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      position: relative;
+    }
+
+    .hero-badge strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ua3);
+    }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--muted);
+      opacity: 0.5;
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    .scroll-hint-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: translateX(-50%) translateY(0); }
+      50% { opacity: 0.7; transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ─────────────────────────────────────────
+       SECTION LAYOUT
+       ───────────────────────────────────────── */
+    .section {
+      padding: var(--section-pad);
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-divider {
+      border: none;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0;
+    }
+
+    .section-eyebrow {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      letter-spacing: 0.03em;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .section-desc {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 600px;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ─────────────────────────────────────────
+       PROJECT CARDS
+       ───────────────────────────────────────── */
+    .projects-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    /* --- Card: Avaliação Final (Large featured) --- */
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      text-decoration: none;
+      color: var(--text);
+      display: block;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+      position: relative;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .project-card--avaliacao:hover {
+      border-color: rgba(84,160,255,0.4);
+      box-shadow: 0 20px 60px rgba(84,160,255,0.1), 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .project-card--dashboard:hover {
+      border-color: rgba(56,182,255,0.4);
+      box-shadow: 0 20px 60px rgba(56,182,255,0.1), 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .card-inner {
+      padding: 2.5rem;
+    }
+
+    .card-badge {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-badge--avaliacao {
+      background: rgba(84,160,255,0.12);
+      color: var(--ua2);
+    }
+
+    .card-badge--pi {
+      background: rgba(56,182,255,0.12);
+      color: var(--pi);
+    }
+
+    .card-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      letter-spacing: 0.04em;
+      line-height: 1.1;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-desc {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+      max-width: 550px;
+    }
+
+    /* UA color tags */
+    .ua-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .ua-tag {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      padding: 0.3rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid;
+    }
+
+    .ua-tag--1 { background: rgba(255,159,67,0.1); color: var(--ua1); border-color: rgba(255,159,67,0.25); }
+    .ua-tag--2 { background: rgba(84,160,255,0.1); color: var(--ua2); border-color: rgba(84,160,255,0.25); }
+    .ua-tag--3 { background: rgba(29,209,161,0.1); color: var(--ua3); border-color: rgba(29,209,161,0.25); }
+    .ua-tag--4 { background: rgba(255,107,157,0.1); color: var(--ua4); border-color: rgba(255,107,157,0.25); }
+
+    /* CTA arrow */
+    .card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .card-cta--avaliacao { color: var(--ua2); }
+    .card-cta--pi { color: var(--pi); }
+
+    .card-cta svg {
+      transition: transform 0.2s;
+    }
+
+    .project-card:hover .card-cta svg {
+      transform: translateX(4px);
+    }
+
+    /* Decorative number */
+    .card-num {
+      position: absolute;
+      top: 1.5rem;
+      right: 2rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 10vw, 8rem);
+      line-height: 1;
+      opacity: 0.04;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* Gradient accent bar at top of card */
+    .card-accent {
+      height: 3px;
+    }
+
+    .card-accent--avaliacao {
+      background: linear-gradient(90deg, var(--ua1), var(--ua2), var(--ua3), var(--ua4));
+    }
+
+    .card-accent--pi {
+      background: linear-gradient(90deg, var(--pi), #00d2ff);
+    }
+
+    /* ─────────────────────────────────────────
+       DASHBOARD SUB-PAGES GRID
+       ───────────────────────────────────────── */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    @media (max-width: 700px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .dash-page {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    }
+
+    .dash-page:hover {
+      background: var(--surface3);
+      border-color: rgba(56,182,255,0.3);
+      transform: translateY(-2px);
+    }
+
+    .dash-page-icon {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(56,182,255,0.08);
+      border-radius: 8px;
+      color: var(--pi);
+    }
+
+    .dash-page-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .dash-page-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .dash-page-sub {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ─────────────────────────────────────────
+       DOCUMENTATION SECTION
+       ───────────────────────────────────────── */
+    .docs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .doc-link {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      color: var(--text);
+      padding: 1rem 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+
+    .doc-link:hover {
+      background: var(--surface2);
+      border-color: var(--ua3);
+      transform: translateX(4px);
+    }
+
+    .doc-icon {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(29,209,161,0.08);
+      border-radius: 6px;
+      color: var(--ua3);
+    }
+
+    .doc-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .doc-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .doc-path {
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .doc-arrow {
+      color: var(--muted);
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .doc-link:hover .doc-arrow {
+      opacity: 1;
+      transform: translateX(2px);
+    }
+
+    /* ─────────────────────────────────────────
+       REPO STRUCTURE
+       ───────────────────────────────────────── */
+    .tree-block {
+      background: #0d0f1a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 2rem;
+    }
+
+    .tree-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tree-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .tree-dot--red { background: #ff5f56; }
+    .tree-dot--yellow { background: #ffbd2e; }
+    .tree-dot--green { background: #27c93f; }
+
+    .tree-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-left: 0.5rem;
+    }
+
+    .tree-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.9;
+      padding: 1.25rem 1.5rem;
+      color: var(--muted);
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .tree-code .folder { color: var(--ua2); }
+    .tree-code .file-html { color: var(--ua1); }
+    .tree-code .file-css { color: var(--ua4); }
+    .tree-code .file-js { color: #e5c07b; }
+    .tree-code .file-md { color: var(--ua3); }
+    .tree-code .highlight { color: var(--text); font-weight: 700; }
+    .tree-code .comment { color: #5c6370; font-style: italic; }
+
+    /* ─────────────────────────────────────────
+       STUDENT INFO SECTION
+       ───────────────────────────────────────── */
+    .student-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .student-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+
+    .student-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .student-value {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    /* ─────────────────────────────────────────
+       FOOTER (mesmo padrão de ihc-desafios.html)
+       ───────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      margin-top: 4rem;
+      background: var(--surface);
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    @media (max-width: 700px) {
+      .footer-inner {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+      .footer-sep { display: none; }
+    }
+
+    .footer-badge {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-subject {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      line-height: 1.1;
+      margin-bottom: 0.6rem;
+    }
+
+    .footer-uni {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-topics {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+      opacity: 0.6;
+      margin-top: 0.25rem;
+    }
+
+    .footer-sep {
+      width: 1px;
+      align-self: stretch;
+      background: var(--border);
+    }
+
+    .footer-links-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .footer-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text);
+      padding: 0.9rem 1rem;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-link:hover {
+      background: var(--surface2);
+      border-color: var(--border);
+    }
+
+    .footer-link:hover.personal { color: var(--ua3); }
+    .footer-link:hover.repo { color: var(--ua2); }
+
+    .footer-link svg {
+      flex-shrink: 0;
+      opacity: 0.7;
+    }
+
+    .footer-link:hover svg { opacity: 1; }
+
+    .footer-link-info { display: flex; flex-direction: column; }
+
+    .footer-link-label {
+      font-weight: 700;
+      font-size: 0.9rem;
+      line-height: 1.3;
+    }
+
+    .footer-link-sub {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding: 1.25rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-claude {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .footer-claude-badge {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      background: rgba(124, 106, 247, 0.12);
+      color: #7c6af7;
+      border: 1px solid rgba(124, 106, 247, 0.25);
+    }
+
+    .footer-author {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .footer-author strong {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      color: var(--text);
+    }
+
+    /* ─────────────────────────────────────────
+       ANIMATIONS
+       ───────────────────────────────────────── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero > * {
+      animation: fadeInUp 0.6s ease forwards;
+      opacity: 0;
+    }
+
+    .hero-eyebrow { animation-delay: 0.1s; }
+    .hero-title   { animation-delay: 0.2s; }
+    .hero-subtitle { animation-delay: 0.35s; }
+    .hero-badge   { animation-delay: 0.5s; }
+    .scroll-hint  { animation-delay: 0.7s; }
+
+    /* Scroll-triggered fade */
+    .fade-section {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─────────────────────────────────────────
+       RESPONSIVE
+       ───────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .card-inner { padding: 1.5rem; }
+      .card-num { display: none; }
+      .student-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
 </head>
-
 <body>
 
   <!--
     ══════════════════════════════════════════════
-    ACESSIBILIDADE: Skip Link (WCAG 2.4.1)
-    Permite usuários de teclado pular navegação
+    ACESSIBILIDADE — Prática 2: Skip Link
+    Permite pular toda a navegação e ir direto ao
+    conteúdo principal (WCAG 2.4.1)
     ══════════════════════════════════════════════
   -->
   <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo principal</a>
 
-  <div class="layout">
+  <!--
+    ══════════════════════════════════════════════
+    HERO SECTION
+    HTML Semântico: <header> identifica o cabeçalho
+    principal da página (WCAG 1.3.1)
+    ══════════════════════════════════════════════
+  -->
+  <header class="hero" role="banner">
+    <p class="hero-eyebrow" aria-hidden="true">Ciência da Computação · UniCEUB</p>
+    <h1 class="hero-title">
+      Interação<br>
+      <span>Humano&#8209;Computador</span>
+    </h1>
+    <p class="hero-subtitle">
+      Portal de navegação das atividades desenvolvidas na disciplina de IHC — 
+      avaliação final, protótipo de dashboard e documentação acadêmica
+    </p>
+    <div class="hero-badge">
+      <span class="hero-badge-dot" aria-hidden="true"></span>
+      <strong>Lucas Gonçalves Balduino</strong>
+      <span aria-hidden="true">·</span>
+      <span>22409139</span>
+    </div>
 
-    <!-- ══════════════════════════════════════════
-         SIDEBAR
-         HTML Semântico: <aside> identifica região
-         complementar ao conteúdo principal
-    ═══════════════════════════════════════════ -->
-    <aside class="sidebar" aria-label="Painel lateral de navegação e filtros">
+    <div class="scroll-hint" aria-hidden="true">
+      <span class="scroll-hint-text">Explore</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+    </div>
+  </header>
 
-      <header class="sidebar-header">
-        <p class="project-title">Projeto Integrador I</p>
-        <p class="project-subtitle">Dashboard Protótipo v1.0</p>
-      </header>
+  <hr class="section-divider">
 
-      <!--
-        HTML Semântico: <nav> com aria-label único
-        <ul> + <li> + <a> para estrutura de lista de navegação
-      -->
-      <nav class="sidebar-nav" aria-label="Menu principal do dashboard">
-        <ul role="list">
-          <li>
-            <a href="#conteudo-principal" class="nav-item" aria-current="page">
-              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-              Dashboard
-            </a>
-          </li>
-          <li>
-            <a href="formularios.html" class="nav-item">
-              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 10h8M8 14h4"/></svg>
-              Formulários
-            </a>
-          </li>
-          <li>
-            <a href="sobre.html" class="nav-item">
-              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              Sobre o Projeto
-            </a>
-          </li>
-          <li>
-            <a href="#fontes" class="nav-item">
-              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="17" width="18" height="4" rx="1"/></svg>
-              Fontes de Dados
-            </a>
-          </li>
-        </ul>
-      </nav>
+  <!--
+    ══════════════════════════════════════════════
+    CONTEÚDO PRINCIPAL
+    HTML Semântico: <main> identifica a região
+    principal — um único <main> por página (WCAG 1.3.1)
+    ══════════════════════════════════════════════
+  -->
+  <main id="conteudo-principal">
 
-      <!--
-        ACESSIBILIDADE — Prática 5: Formulários Inclusivos
-        <fieldset> agrupa filtros relacionados
-        <legend> descreve o grupo para leitores de tela
-        <label> envolve o <input> — aumenta área de clique
-        e associa o texto descritivo ao campo
-      -->
-      <section class="filters-section dashboard-only-filters" aria-labelledby="filtros-titulo">
-        <h2 id="filtros-titulo" class="filters-heading sr-only">Filtros de Dados do Dashboard</h2>
-        <p class="filters-heading" aria-hidden="true">Filtros de Dados (Dashboard)</p>
-        <p class="filters-helper-text">Ligue um ou mais filtros para refinar os cards exibidos.</p>
+    <!-- ═══════════════════════════════════════
+         SEÇÃO: PROJETOS
+         ═══════════════════════════════════════ -->
+    <section class="section fade-section" aria-labelledby="projetos-titulo">
+      <p class="section-eyebrow" aria-hidden="true">Atividades</p>
+      <h2 id="projetos-titulo" class="section-title">Projetos Desenvolvidos</h2>
+      <p class="section-desc">
+        Dois projetos compõem este repositório — a avaliação final da disciplina de IHC 
+        e o protótipo de dashboard do Projeto Integrador I.
+      </p>
 
-        <fieldset class="filters-fieldset">
-          <legend class="sr-only">Selecionar categorias de dados do dashboard</legend>
-
-          <label class="filter-label">
-            <input type="checkbox" data-dashboard-toggle value="diaristas" checked />
-            Diaristas
-          </label>
-
-          <label class="filter-label">
-            <input type="checkbox" data-dashboard-toggle value="contratantes" checked />
-            Contratantes
-          </label>
-
-          <label class="filter-label">
-            <input type="checkbox" data-dashboard-toggle value="pesquisa-local" checked />
-            Pesquisa Local
-          </label>
-        </fieldset>
-        <p class="filters-status" id="dashboard-filter-status" aria-live="polite"></p>
-      </section>
-
-      <section class="filters-section" aria-labelledby="filtros-titulo">
-        <p class="filters-heading" aria-hidden="true">Autores</p>
-
-        <p class="project-title">Lucas Gonçalves</p>
-        <p class="project-subtitle">Product Owner</p>
-
-        <p class="project-title">João Victor Rios</p>
-        <p class="project-subtitle">Desenvolvedor Full-stack</p>
-
-        <p class="project-title">Alexsander Motta</p>
-        <p class="project-subtitle">Analista de BI</p>
-
-        <p class="project-title">Beatriz Vasconcellos</p>
-        <p class="project-subtitle">Pesquisadora UX</p>
-        
-        <p class="project-title">Vinicius Inoue</p>
-        <p class="project-subtitle">Analista de Qualidade</p>
-      </section>
-
-      <div class="sidebar-footer">
-        <!-- Logo CEUB acessível em imagem) -->
-        <div class="ceub-logo" role="img" aria-label="CEUB – Centro Universitário de Brasília">
-          <img src="https://institucional.uniceub.br/hubfs/BrandCenter/img/logo-ceub-colorida-02.png" alt="Logo institucional UniCEUB" class="ceub-logo">
-        </div>
+      <div class="projects-grid">
 
         <!--
-          ACESSIBILIDADE: <button> nativo com aria-pressed
-          para o toggle de tema (estado declarado ao leitor de tela)
+          ──────────────────────────────────────
+          CARD 1: Avaliação Final IHC
+          ACESSIBILIDADE: link descritivo com
+          aria-label para contexto completo
+          ──────────────────────────────────────
         -->
-        <button
-          type="button"
-          class="btn-sidebar"
-          aria-pressed="false"
-          aria-label="Alternar entre tema claro e escuro"
-        >
-          <svg width="14" height="14" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          Theme Toggle
-        </button>
+        <a href="AvaliacaoFinal/ihc-desafios.html"
+           class="project-card project-card--avaliacao"
+           aria-label="Acessar a página de Desafios e Soluções da avaliação final de IHC, contendo as quatro Unidades de Aprendizagem">
+          <div class="card-accent card-accent--avaliacao" aria-hidden="true"></div>
+          <div class="card-inner">
+            <span class="card-badge card-badge--avaliacao">Avaliação Final</span>
+            <h3 class="card-title">Desafios & Soluções<br>de IHC</h3>
+            <p class="card-desc">
+              Análise prática de usabilidade, acessibilidade, processo de design de interfaces 
+              e programação orientada a objetos — quatro unidades de aprendizagem com problemas 
+              reais e suas soluções documentadas.
+            </p>
+            <div class="ua-tags" aria-label="Unidades de Aprendizagem abordadas">
+              <span class="ua-tag ua-tag--1">UA 1 · Navegabilidade</span>
+              <span class="ua-tag ua-tag--2">UA 2 · Acessibilidade</span>
+              <span class="ua-tag ua-tag--3">UA 3 · Processo de Design</span>
+              <span class="ua-tag ua-tag--4">UA 4 · Programação OO</span>
+            </div>
+            <span class="card-cta card-cta--avaliacao">
+              Acessar Avaliação
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </span>
+          </div>
+          <div class="card-num" aria-hidden="true">IHC</div>
+        </a>
 
         <!--
-          ACESSIBILIDADE: <button> nativo — substitui <div> estilizado
-          Prática: Fake Button → <button> semântico
+          ──────────────────────────────────────
+          CARD 2: Protótipo de Dashboard
+          ──────────────────────────────────────
         -->
-        <button type="button" class="btn-export">
-          <svg width="13" height="13" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
-          Export Report
-        </button>
-      </div>
-
-    </aside><!-- /aside.sidebar -->
-
-
-    <!-- ══════════════════════════════════════════
-         CONTEÚDO PRINCIPAL
-         HTML Semântico: <main> com id para skip link
-         e aria-labelledby vinculado ao <h1>
-    ═══════════════════════════════════════════ -->
-    <main id="conteudo-principal" class="main-content" aria-labelledby="titulo-dashboard" data-dashboard-root>
-
-      <!-- Cabeçalho do dashboard -->
-      <header class="dashboard-header">
-        <p class="dashboard-category">Trabalho Doméstico Informal</p>
-        <!--
-          ACESSIBILIDADE — Prática 1: H1 único por página.
-          Define o propósito central do documento.
-        -->
-        <h1 id="titulo-dashboard">Projeto Integrador I – UniCEUB</h1>
-      </header>
-
-
-      <!-- ─────────── LINHA 1: Informalidade + MEI ─────────── -->
-      <div class="dashboard-row">
-
-        <!-- ══ SEÇÃO: Taxa de Informalidade ══ -->
-        <section class="card card--wide dashboard-filter-card" data-filter-tags="diaristas,contratantes,pesquisa-local" aria-labelledby="h2-informalidade">
-          <header class="card-header">
-            <p class="card-category">Contexto de Mercado</p>
-            <!--
-              ACESSIBILIDADE — Prática 1: H2 para seção principal
-            -->
-            <h2 id="h2-informalidade">Taxa de Informalidade</h2>
-
-            <!--
-              ACESSIBILIDADE: ícone ⓘ como <button> nativo com aria-label
-              Não é um <div> decorativo — é interativo
-            -->
-            <button
-              type="button"
-              class="btn-info"
-              aria-label="Mais informações sobre Taxa de Informalidade"
-            >
-              <svg width="16" height="16" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            </button>
-          </header>
-
-          <!--
-            ACESSIBILIDADE — Prática 4: Gráficos com alternativa textual
-            <figure> + SVG com role="img" e <title> interno
-            Tabela oculta visualmente fornece dados estruturados
-          -->
-          <div class="charts-row">
-
-            <!-- Gráfico 1: 31,5% Geral -->
-            <figure class="donut-figure">
-              <div class="chart-container chart-container--donut">
-                <canvas id="chart-informalidade-geral" aria-hidden="true">
-                  Gráfico de rosca: 31,5% da força de trabalho nacional está em regime informal.
-                </canvas>
-              </div>
-
-              <figcaption>
-                Representação da força de trabalho nacional em regimes informais.
-              </figcaption>
-
-              <!-- Tabela de dados: acessível via sr-only -->
-              <table class="sr-only">
-                <caption>Taxa de informalidade geral no mercado de trabalho nacional</caption>
-                <thead><tr><th scope="col">Regime</th><th scope="col">Percentual</th></tr></thead>
-                <tbody>
-                  <tr><td>Informal</td><td>31,5%</td></tr>
-                  <tr><td>Formal</td><td>68,5%</td></tr>
-                </tbody>
-              </table>
-            </figure>
-
-            <!-- Gráfico 2: 75% Doméstico -->
-            <figure class="donut-figure">
-              <div class="chart-container chart-container--donut">
-                <canvas id="chart-informalidade-domestico" aria-hidden="true">
-                  Gráfico de rosca: 75% dos trabalhadores domésticos estão em regime informal.
-                </canvas>
-              </div>
-
-              <figcaption>
-                A informalidade atinge níveis críticos no setor de trabalho doméstico.
-              </figcaption>
-
-              <table class="sr-only">
-                <caption>Taxa de informalidade no setor de trabalho doméstico</caption>
-                <thead><tr><th scope="col">Regime</th><th scope="col">Percentual</th></tr></thead>
-                <tbody>
-                  <tr><td>Informal</td><td>75%</td></tr>
-                  <tr><td>Formal</td><td>25%</td></tr>
-                </tbody>
-              </table>
-            </figure>
-
-          </div><!-- /charts-row -->
-        </section><!-- /Taxa de Informalidade -->
-
-
-        <!-- ══ SEÇÃO: Status MEI ══ -->
-        <section class="card card--narrow dashboard-filter-card" data-filter-tags="diaristas,pesquisa-local" aria-labelledby="h2-mei">
-          <header class="card-header">
-            <p class="card-category">Status Legal</p>
-            <h2 id="h2-mei">Status MEI</h2>
-          </header>
-
-          <!--
-            ACESSIBILIDADE — Prática 2 + 4:
-            Gráfico com SVG acessível (role="img", <title>)
-            Legenda como tabela de dados estruturados
-            Pontos de cor com aria-hidden (cor não é o único identificador)
-          -->
-          <figure class="mei-figure" aria-labelledby="titulo-mei-chart">
-            <div class="chart-container chart-container--mei">
-              <canvas id="chart-mei" aria-hidden="true">
-                Gráfico de rosca: Status MEI — 62% não possui, 28% possui, 10% já teve.
-              </canvas>
-            </div>
-
-            <figcaption>
-              <!--
-                ACESSIBILIDADE — Prática 2: <table> para dados tabulares
-                Cabeçalhos com <th scope="col"> identificam colunas
-              -->
-              <table class="mei-table" aria-label="Distribuição do Status MEI entre os trabalhadores pesquisados">
-                <caption class="sr-only">
-                  Status MEI: parcela dos trabalhadores domésticos informais que possuem, não possuem ou já possuíram registro como Microempreendedor Individual.
-                </caption>
-                <thead>
-                  <tr>
-                    <th scope="col">Status</th>
-                    <th scope="col">%</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <!--
-                      ACESSIBILIDADE: aria-hidden nos quadrados de cor.
-                      A informação é transmitida pelo texto, não só pela cor.
-                    -->
-                    <td>
-                      <span class="legend-dot" style="background:#1a5fa8" aria-hidden="true"></span>
-                      Não Possui
-                    </td>
-                    <td>62%</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <span class="legend-dot" style="background:#b8cee8" aria-hidden="true"></span>
-                      Possui
-                    </td>
-                    <td>28%</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <span class="legend-dot" style="background:#dce8f5;border:1px solid #b8cee8" aria-hidden="true"></span>
-                      Já Teve
-                    </td>
-                    <td>10%</td>
-                  </tr>
-                </tbody>
-              </table>
-            </figcaption>
-          </figure>
-        </section><!-- /Status MEI -->
-
-      </div><!-- /Linha 1 -->
-
-
-      <!-- ─────────── LINHA 2: Qualidade + Preocupações ─────────── -->
-      <div class="dashboard-row dashboard-row--equal">
-
-        <!-- ══ SEÇÃO: Qualidade do Trabalho ══ -->
-        <section class="card dashboard-filter-card" data-filter-tags="diaristas,contratantes" aria-labelledby="h2-qualidade">
-          <header class="card-header">
-            <p class="card-category">Análise Comparativa</p>
-            <h2 id="h2-qualidade">Qualidade do Trabalho</h2>
-          </header>
-
-          <div class="quality-metrics">
-
-            <!-- Horas Semanais -->
-            <div>
-              <!--
-                ACESSIBILIDADE — Prática 1: H3 para subseção
-                dentro da seção H2 "Qualidade do Trabalho"
-              -->
-              <h3 class="metric-title">
-                <svg width="14" height="14" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                Horas Semanais
-              </h3>
-              <div class="chart-container chart-container--bar-h">
-                <canvas id="chart-horas" aria-hidden="true">
-                  Gráfico de barras: Formal 30h/semana, Informal 40h/semana.
-                </canvas>
-              </div>
-              <dl class="sr-only">
-                <div><dt>Formal</dt><dd>30h/semana</dd></div>
-                <div><dt>Informal</dt><dd>40h/semana</dd></div>
-              </dl>
-            </div>
-
-            <!-- Salário Mensal -->
-            <div>
-              <h3 class="metric-title">
-                <svg width="14" height="14" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-                Salário Mensal
-              </h3>
-              <div class="chart-container chart-container--bar-h">
-                <canvas id="chart-salario" aria-hidden="true">
-                  Gráfico de barras: Formal R$ 2.450, Informal R$ 1.120.
-                </canvas>
-              </div>
-              <dl class="sr-only">
-                <div><dt>Formal</dt><dd>R$ 2.450</dd></div>
-                <div><dt>Informal</dt><dd>R$ 1.120</dd></div>
-              </dl>
-            </div>
-
-          </div><!-- /quality-metrics -->
-        </section><!-- /Qualidade do Trabalho -->
-
-
-        <!-- ══ SEÇÃO: Preocupações ══ -->
-        <section class="card dashboard-filter-card" data-filter-tags="contratantes,pesquisa-local" aria-labelledby="h2-preocupacoes">
-          <header class="card-header">
-            <p class="card-category">Método da Empatia</p>
-            <h2 id="h2-preocupacoes">Preocupações</h2>
-          </header>
-
-          <!--
-            ACESSIBILIDADE — PROBLEMA CORRIGIDO:
-            O design original usa nuvem de palavras onde o tamanho
-            da fonte indica a frequência/importância do tema.
-            PROBLEMA: leitores de tela não percebem diferença de tamanho.
-            SOLUÇÃO: <ul> semântica — cada preocupação é um <li>.
-            O estilo visual (tamanho) é mantido com classes CSS,
-            mas o conteúdo é plenamente acessível via texto.
-          -->
-          <ul
-            class="concerns-list"
-            aria-label="Principais preocupações identificadas entre trabalhadores domésticos informais"
-          >
-            <li class="concern concern--xl">MEDO</li>
-            <li class="concern concern--xl concern--accent">CONFIANÇA</li>
-            <li class="concern concern--lg">VALOR</li>
-            <li class="concern concern--xl">SEGURANÇA</li>
-            <li class="concern concern--md">TRANSPORTE</li>
-            <li class="concern concern--lg concern--accent">PREÇO</li>
-            <li class="concern concern--sm">ESTABILIDADE</li>
-            <li class="concern concern--md concern--accent">SAÚDE</li>
-          </ul>
-        </section><!-- /Preocupações -->
-
-      </div><!-- /Linha 2 -->
-
-
-      <!-- ─────────── LINHA 3: Canal de Aquisição ─────────── -->
-      <section class="card card--full dashboard-filter-card" data-filter-tags="diaristas,contratantes,pesquisa-local" aria-labelledby="h2-canal">
-        <div class="canal-grid">
-
-          <div class="canal-text">
-            <header class="card-header">
-              <p class="card-category">Cenário Obsoleto</p>
-              <h2 id="h2-canal">Canal de Aquisição</h2>
-            </header>
-            <p>
-              O mercado doméstico é movido quase exclusivamente pela reputação pessoal.
-              A indicação direta domina o cenário de contratação, superando plataformas digitais.
+        <div class="project-card project-card--dashboard" role="region" aria-labelledby="dashboard-titulo">
+          <div class="card-accent card-accent--pi" aria-hidden="true"></div>
+          <div class="card-inner">
+            <span class="card-badge card-badge--pi">Projeto Integrador I</span>
+            <h3 id="dashboard-titulo" class="card-title">Protótipo de Dashboard</h3>
+            <p class="card-desc">
+              Dashboard de análise do mercado de Trabalho Doméstico Informal no Brasil — 
+              visualização de dados, formulários de coleta e documentação do projeto.
             </p>
 
             <!--
-              HTML Semântico: <dl> para pares estatísticos
+              ACESSIBILIDADE — Prática 6: Navegação Clara
+              Links com texto descritivo e ícones
+              decorativos marcados com aria-hidden
+              (WCAG 2.4.4 — Link Purpose)
             -->
-            <dl class="canal-stats">
-              <div>
-                <dt>Indicação</dt>
-                <dd>85.7%</dd>
+            <nav aria-label="Páginas do protótipo de dashboard">
+              <div class="dashboard-grid">
+                <a href="PrototipoPI1/index.html" class="dash-page" aria-label="Acessar o painel principal do dashboard">
+                  <div class="dash-page-icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                  </div>
+                  <div class="dash-page-info">
+                    <span class="dash-page-name">Dashboard</span>
+                    <span class="dash-page-sub">Painel principal</span>
+                  </div>
+                </a>
+                <a href="PrototipoPI1/formularios.html" class="dash-page" aria-label="Acessar os formulários de coleta de dados">
+                  <div class="dash-page-icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 10h8M8 14h4"/></svg>
+                  </div>
+                  <div class="dash-page-info">
+                    <span class="dash-page-name">Formulários</span>
+                    <span class="dash-page-sub">Coleta de dados</span>
+                  </div>
+                </a>
+                <a href="PrototipoPI1/sobre.html" class="dash-page" aria-label="Acessar a página sobre o projeto integrador">
+                  <div class="dash-page-icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  </div>
+                  <div class="dash-page-info">
+                    <span class="dash-page-name">Sobre o Projeto</span>
+                    <span class="dash-page-sub">Documentação</span>
+                  </div>
+                </a>
               </div>
-              <div>
-                <dt>Outros</dt>
-                <dd>14.3%</dd>
-              </div>
-            </dl>
+            </nav>
           </div>
+          <div class="card-num" aria-hidden="true">PI1</div>
+        </div>
 
-          <!--
-            ACESSIBILIDADE — Prática 4:
-            Gráfico de barras com <figure>, SVG role="img" e <title>
-            Tabela de dados oculta (sr-only) para leitores de tela
-          -->
-          <figure aria-labelledby="titulo-canal-chart">
-            <div class="chart-container chart-container--bar-v">
-              <canvas id="chart-canal" aria-hidden="true">
-                Gráfico de barras: Canais de aquisição de clientes — Indicação 85,7% e Outros 14,3%.
-              </canvas>
-            </div>
+      </div>
+    </section>
 
-            <!-- Tabela oculta para leitores de tela -->
-            <table class="sr-only">
-              <caption>Canal de aquisição de clientes para trabalhadores domésticos informais</caption>
-              <thead>
-                <tr>
-                  <th scope="col">Canal</th>
-                  <th scope="col">Percentual</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td>Indicação (boca a boca / reputação pessoal)</td><td>85,7%</td></tr>
-                <tr><td>Outros meios (plataformas digitais e afins)</td><td>14,3%</td></tr>
-              </tbody>
-            </table>
+    <hr class="section-divider">
 
-            <figcaption class="sr-only" id="titulo-canal-chart">
-              Gráfico mostrando que 85,7% das contratações de trabalhadores domésticos ocorrem por indicação
-              direta, enquanto apenas 14,3% ocorrem por outros meios.
-            </figcaption>
-          </figure>
-
-        </div><!-- /canal-grid -->
-      </section><!-- /Canal de Aquisição -->
-
-
-      <!-- ══════════════════════════════════════════
-           RODAPÉ
-           HTML Semântico: <footer> dentro de <main>
-      ═══════════════════════════════════════════ -->
-<footer class="site-footer" aria-label="Rodapé do site">
-
-  <div class="footer-grid">
-
-    <!-- Coluna 1: Identidade do Projeto e Instituição -->
-    <div class="footer-brand">
-      <img
-        class="footer-ceub-logo"
-        src="https://institucional.uniceub.br/hubfs/BrandCenter/img/logo-ceub-colorida-02.png"
-        alt="Logo institucional UniCEUB – Centro Universitário de Brasília"
-      >
-      <p class="footer-project-name">Dashboard — Trabalho Doméstico Informal</p>
-      <p class="footer-institution">
-        Centro Universitário de Brasília · Ciência da Computação<br>
-        Orientação: Profa. Kadidja Valéria
+    <!-- ═══════════════════════════════════════
+         SEÇÃO: DOCUMENTAÇÃO
+         ═══════════════════════════════════════ -->
+    <section class="section fade-section" aria-labelledby="docs-titulo">
+      <p class="section-eyebrow" aria-hidden="true">Arquivos</p>
+      <h2 id="docs-titulo" class="section-title">Documentação</h2>
+      <p class="section-desc">
+        Relatórios em Markdown com o desenvolvimento detalhado de cada unidade 
+        de aprendizagem e a documentação geral do repositório.
       </p>
-      <span class="footer-badge" aria-label="Projeto Integrador I">
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M2 20h20M6 20V10l6-8 6 8v10"/></svg>
-        Projeto Integrador I
-      </span>
-      <p class="footer-data-note">
-        Dados compilados da PNAD Contínua — IBGE &amp; Pesquisa de Campo Local 2026.
-        Todos os direitos reservados.
+
+      <nav class="docs-list" aria-label="Lista de documentos do repositório">
+        <a href="https://github.com/Lucas-Balduino/AvaliacaoIHC/blob/main/README.md"
+           target="_blank" rel="noopener noreferrer"
+           class="doc-link"
+           aria-label="Abrir README.md no GitHub — documentação geral do repositório">
+          <div class="doc-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </div>
+          <div class="doc-info">
+            <span class="doc-name">README.md</span>
+            <span class="doc-path">Documentação geral do repositório</span>
+          </div>
+          <svg class="doc-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+
+        <a href="https://github.com/Lucas-Balduino/AvaliacaoIHC/blob/main/AvaliacaoFinal/UAs/DesafiosUA.md"
+           target="_blank" rel="noopener noreferrer"
+           class="doc-link"
+           aria-label="Abrir DesafiosUA.md no GitHub — relatório completo dos desafios">
+          <div class="doc-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </div>
+          <div class="doc-info">
+            <span class="doc-name">DesafiosUA.md</span>
+            <span class="doc-path">AvaliacaoFinal/UAs/ — Relatório completo</span>
+          </div>
+          <svg class="doc-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+
+        <a href="https://github.com/Lucas-Balduino/AvaliacaoIHC/blob/main/AvaliacaoFinal/UAs/UA1/UA1-Navegabilidade.md"
+           target="_blank" rel="noopener noreferrer"
+           class="doc-link"
+           aria-label="Abrir UA1 Navegabilidade no GitHub">
+          <div class="doc-icon" style="background:rgba(255,159,67,0.08);color:var(--ua1)" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <div class="doc-info">
+            <span class="doc-name" style="color:var(--ua1)">UA1 — Navegabilidade</span>
+            <span class="doc-path">AvaliacaoFinal/UAs/UA1/</span>
+          </div>
+          <svg class="doc-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+
+        <a href="https://github.com/Lucas-Balduino/AvaliacaoIHC/blob/main/AvaliacaoFinal/UAs/UA2/UA2-Acessibilidade.md"
+           target="_blank" rel="noopener noreferrer"
+           class="doc-link"
+           aria-label="Abrir UA2 Acessibilidade no GitHub">
+          <div class="doc-icon" style="background:rgba(84,160,255,0.08);color:var(--ua2)" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <div class="doc-info">
+            <span class="doc-name" style="color:var(--ua2)">UA2 — Acessibilidade</span>
+            <span class="doc-path">AvaliacaoFinal/UAs/UA2/</span>
+          </div>
+          <svg class="doc-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+
+        <a href="https://github.com/Lucas-Balduino/AvaliacaoIHC/blob/main/AvaliacaoFinal/UAs/UA3/UA3-ProcessoDeDesign.md"
+           target="_blank" rel="noopener noreferrer"
+           class="doc-link"
+           aria-label="Abrir UA3 Processo de Design no GitHub">
+          <div class="doc-icon" style="background:rgba(29,209,161,0.08);color:var(--ua3)" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <div class="doc-info">
+            <span class="doc-name" style="color:var(--ua3)">UA3 — Processo de Design</span>
+            <span class="doc-path">AvaliacaoFinal/UAs/UA3/</span>
+          </div>
+          <svg class="doc-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+
+        <a href="https://github.com/Lucas-Balduino/AvaliacaoIHC/blob/main/AvaliacaoFinal/UAs/UA4/UA4-ProgramacaoOO.md"
+           target="_blank" rel="noopener noreferrer"
+           class="doc-link"
+           aria-label="Abrir UA4 Programação OO no GitHub">
+          <div class="doc-icon" style="background:rgba(255,107,157,0.08);color:var(--ua4)" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <div class="doc-info">
+            <span class="doc-name" style="color:var(--ua4)">UA4 — Programação OO</span>
+            <span class="doc-path">AvaliacaoFinal/UAs/UA4/</span>
+          </div>
+          <svg class="doc-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </nav>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ═══════════════════════════════════════
+         SEÇÃO: ESTRUTURA DO REPOSITÓRIO
+         ═══════════════════════════════════════ -->
+    <section class="section fade-section" aria-labelledby="estrutura-titulo">
+      <p class="section-eyebrow" aria-hidden="true">Organização</p>
+      <h2 id="estrutura-titulo" class="section-title">Estrutura do Repositório</h2>
+      <p class="section-desc">
+        Visão geral de como os arquivos estão organizados neste projeto.
+      </p>
+
+      <div class="tree-block" role="img" aria-label="Árvore de diretórios do repositório mostrando a organização dos arquivos em pastas: PrototipoPI1 para o dashboard, AvaliacaoFinal para os desafios de IHC e UAs para os markdowns">
+        <div class="tree-header" aria-hidden="true">
+          <span class="tree-dot tree-dot--red"></span>
+          <span class="tree-dot tree-dot--yellow"></span>
+          <span class="tree-dot tree-dot--green"></span>
+          <span class="tree-title">AvaliacaoIHC/</span>
+        </div>
+        <div class="tree-code" aria-hidden="true"><span class="highlight">AvaliacaoIHC/</span>
+├── <span class="file-html">index.html</span>              <span class="comment">← Portal principal (esta página)</span>
+├── <span class="file-md">README.md</span>
+│
+├── <span class="folder">PrototipoPI1/</span>            <span class="comment">← Projeto Integrador I</span>
+│   ├── <span class="file-html">index.html</span>           <span class="comment">Dashboard</span>
+│   ├── <span class="file-html">formularios.html</span>     <span class="comment">Formulários</span>
+│   ├── <span class="file-html">sobre.html</span>           <span class="comment">Sobre o Projeto</span>
+│   ├── <span class="file-css">styles.css</span>
+│   └── <span class="file-js">script.js</span>
+│
+└── <span class="folder">AvaliacaoFinal/</span>          <span class="comment">← Avaliação IHC</span>
+    ├── <span class="file-html">ihc-desafios.html</span>   <span class="comment">Desafios & Soluções</span>
+    └── <span class="folder">UAs/</span>
+        ├── <span class="file-md">DesafiosUA.md</span>
+        ├── <span class="folder">UA1/</span> <span class="file-md">UA1-Navegabilidade.md</span>
+        ├── <span class="folder">UA2/</span> <span class="file-md">UA2-Acessibilidade.md</span>
+        ├── <span class="folder">UA3/</span> <span class="file-md">UA3-ProcessoDeDesign.md</span>
+        └── <span class="folder">UA4/</span> <span class="file-md">UA4-ProgramacaoOO.md</span></div>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ═══════════════════════════════════════
+         SEÇÃO: IDENTIFICAÇÃO DO ESTUDANTE
+         ═══════════════════════════════════════ -->
+    <section class="section fade-section" aria-labelledby="aluno-titulo">
+      <p class="section-eyebrow" aria-hidden="true">Identificação</p>
+      <h2 id="aluno-titulo" class="section-title">Dados do Estudante</h2>
+
+      <div class="student-grid">
+        <div class="student-item">
+          <div class="student-label">Nome</div>
+          <div class="student-value">Lucas Gonçalves Balduino</div>
+        </div>
+        <div class="student-item">
+          <div class="student-label">Matrícula</div>
+          <div class="student-value">22409139</div>
+        </div>
+        <div class="student-item">
+          <div class="student-label">Curso</div>
+          <div class="student-value">Ciência da Computação</div>
+        </div>
+        <div class="student-item">
+          <div class="student-label">Polo</div>
+          <div class="student-value">Asa Norte</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════
+       FOOTER
+       Mesmo padrão visual de ihc-desafios.html
+       para manter coesão no repositório.
+       ═══════════════════════════════════════ -->
+  <footer>
+    <div class="footer-inner">
+
+      <!-- Coluna: Informações acadêmicas -->
+      <div>
+        <p class="footer-badge">Portal Acadêmico</p>
+        <h3 class="footer-subject">Interação Humano&#8209;Computador</h3>
+        <p class="footer-uni">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+          UniCEUB — Centro Universitário de Brasília
+        </p>
+        <p class="footer-topics">Avaliação Final · Projeto Integrador I</p>
+      </div>
+
+      <!-- Divisor vertical -->
+      <div class="footer-sep" aria-hidden="true"></div>
+
+      <!-- Coluna: Links -->
+      <div class="footer-links-col">
+        <p class="footer-badge">Repositórios</p>
+
+        <a href="https://github.com/Lucas-Balduino"
+           target="_blank" rel="noopener noreferrer"
+           class="footer-link personal"
+           aria-label="GitHub pessoal de Lucas Balduino">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+          </svg>
+          <span class="footer-link-info">
+            <span class="footer-link-label">Lucas Balduino</span>
+            <span class="footer-link-sub">github.com/Lucas-Balduino</span>
+          </span>
+        </a>
+
+        <a href="https://github.com/Lucas-Balduino/AvaliacaoIHC"
+           target="_blank" rel="noopener noreferrer"
+           class="footer-link repo"
+           aria-label="Repositório de avaliação de IHC">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+          </svg>
+          <span class="footer-link-info">
+            <span class="footer-link-label">AvaliacaoIHC</span>
+            <span class="footer-link-sub">Repositório da matéria</span>
+          </span>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Barra inferior -->
+    <div class="footer-bottom">
+      <div class="footer-claude">
+        <span>Desenvolvido com auxílio do</span>
+        <span class="footer-claude-badge">Claude · Anthropic</span>
+      </div>
+      <p class="footer-author">
+        <strong>Lucas Balduino</strong> &nbsp;·&nbsp; IHC UniCEUB
       </p>
     </div>
+  </footer>
 
-    <!-- Coluna 2: Repositórios -->
-    <div class="footer-col">
-      <p class="footer-col-heading">Repositórios</p>
-      <ul class="footer-link-list">
-        <li>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77A5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-          <a href="https://github.com/Lucas-Balduino/ProjetoIntegrador">Projeto Integrador</a>
-        </li>
-        <li>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77A5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-          <a href="https://github.com/Lucas-Balduino/AvaliacaoIHC">Atividades IHC</a>
-        </li>
-        <li>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-          <a href="https://github.com/Lucas-Balduino">github.com/Lucas-Balduino</a>
-        </li>
-      </ul>
-    </div>
+  <!-- ═══════════════════════════════════════
+       SCRIPTS
+       ═══════════════════════════════════════ -->
+  <script>
+    // ─── Scroll-triggered fade-in ───
+    // Aplica animação de entrada suave nas seções
+    // conforme entram no viewport (IntersectionObserver)
+    const fadeObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          fadeObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
 
-    <!-- Coluna 3: Navegação + Autor -->
-    <div class="footer-col">
-      <p class="footer-col-heading">Navegação</p>
-      <ul class="footer-link-list">
-        <li>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-          <a href="index.html">Dashboard</a>
-        </li>
-        <li>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <a href="sobre.html">Sobre o Projeto</a>
-        </li>
-        <li>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 10h8M8 14h4"/></svg>
-          <a href="formularios.html">Formulários</a>
-        </li>
-      </ul>
+    document.querySelectorAll('.fade-section').forEach(el => {
+      fadeObserver.observe(el);
+    });
+  </script>
 
-      <p class="footer-col-heading" style="margin-top: 20px;">Autor</p>
-      <ul class="footer-link-list">
-        <li>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-          <span class="footer-author-name">Lucas Gonçalves Balduino</span>
-        </li>
-      </ul>
-    </div>
-
-  </div><!-- /footer-grid -->
-
-  <hr class="footer-divider" aria-hidden="true">
-
-  <div class="footer-bottom">
-    <p class="footer-copyright">
-      © 2026 Projeto Integrador I — UniCEUB · Ciência da Computação. Todos os direitos reservados.
-    </p>
-    <span class="footer-ods-badge" aria-label="Alinhado ao ODS 8 da ONU: Trabalho Decente e Crescimento Econômico">
-      <span class="footer-ods-dot" aria-hidden="true"></span>
-      ODS 8 — Trabalho Decente e Crescimento Econômico
-    </span>
-  </div>
-
-</footer>
-
-
-    </main><!-- /main#conteudo-principal -->
-
-  </div><!-- /layout -->
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-  <script src="script.js" defer></script>
 </body>
 </html>

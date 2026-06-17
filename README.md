@@ -11,7 +11,41 @@
 ## Descrição Geral
 
 Este repositório reúne as atividades desenvolvidas durante a disciplina de Interação Humano-Computador (IHC), 
-contemplando os desafios das Unidades de Aprendizagem UA1, UA2, UA3 e UA4.
+contemplando os desafios das Unidades de Aprendizagem UA1, UA2, UA3 e UA4, além do protótipo de dashboard 
+do Projeto Integrador I.
+
+### Portal de Navegação
+
+O arquivo [`index.html`](index.html) na raiz funciona como **portal principal** do repositório, 
+oferecendo acesso direto a todos os projetos e documentos. Acesse via GitHub Pages:
+
+> **[lucas-balduino.github.io/AvaliacaoIHC](https://lucas-balduino.github.io/AvaliacaoIHC/)**
+
+---
+
+## Estrutura do Repositório
+
+```
+AvaliacaoIHC/
+├── index.html                          ← Portal principal (hub)
+├── README.md
+│
+├── PrototipoPI1/                       ← Projeto Integrador I
+│   ├── index.html                      Dashboard
+│   ├── formularios.html                Formulários de coleta
+│   ├── sobre.html                      Sobre o projeto
+│   ├── styles.css
+│   └── script.js
+│
+└── AvaliacaoFinal/                     ← Avaliação Final de IHC
+    ├── ihc-desafios.html               Desafios & Soluções (UA1–UA4)
+    └── UAs/
+        ├── DesafiosUA.md               Relatório completo
+        ├── UA1/UA1-Navegabilidade.md
+        ├── UA2/UA2-Acessibilidade.md
+        ├── UA3/UA3-ProcessoDeDesign.md
+        └── UA4/UA4-ProgramacaoOO.md
+```
 
 ---
 
