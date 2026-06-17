@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Dashboard de análise do mercado de Trabalho Doméstico Informal no Brasil. Projeto Integrador I – UniCEUB." />
+  <title>Dashboard – Trabalho Doméstico Informal | Projeto Integrador I – UniCEUB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+
+  <!--
+    ══════════════════════════════════════════════
+    ACESSIBILIDADE: Skip Link (WCAG 2.4.1)
+    Permite usuários de teclado pular navegação
+    ══════════════════════════════════════════════
+  -->
+  <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo principal</a>
+
+  <div class="layout">
+
+    <!-- ══════════════════════════════════════════
+         SIDEBAR
+         HTML Semântico: <aside> identifica região
+         complementar ao conteúdo principal
+    ═══════════════════════════════════════════ -->
+    <aside class="sidebar" aria-label="Painel lateral de navegação e filtros">
+
+      <header class="sidebar-header">
+        <p class="project-title">Projeto Integrador I</p>
+        <p class="project-subtitle">Dashboard Protótipo v1.0</p>
+      </header>
+
+      <!--
+        HTML Semântico: <nav> com aria-label único
+        <ul> + <li> + <a> para estrutura de lista de navegação
+      -->
+      <nav class="sidebar-nav" aria-label="Menu principal do dashboard">
+        <ul role="list">
+          <li>
+            <a href="../index.html" class="nav-item" aria-label="Voltar ao portal principal">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1m-2 0h2"/></svg>
+              Portal IHC
+            </a>
+          </li>
+          <li>
+            <a href="#conteudo-principal" class="nav-item" aria-current="page">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="formularios.html" class="nav-item">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 10h8M8 14h4"/></svg>
+              Formulários
+            </a>
+          </li>
+          <li>
+            <a href="sobre.html" class="nav-item">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Sobre o Projeto
+            </a>
+          </li>
+          <li>
+            <a href="#fontes" class="nav-item">
+              <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="17" width="18" height="4" rx="1"/></svg>
+              Fontes de Dados
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!--
+        ACESSIBILIDADE — Prática 5: Formulários Inclusivos
+        <fieldset> agrupa filtros relacionados
+        <legend> descreve o grupo para leitores de tela
+        <label> envolve o <input> — aumenta área de clique
+        e associa o texto descritivo ao campo
+      -->
+      <section class="filters-section dashboard-only-filters" aria-labelledby="filtros-titulo">
+        <h2 id="filtros-titulo" class="filters-heading sr-only">Filtros de Dados do Dashboard</h2>
+        <p class="filters-heading" aria-hidden="true">Filtros de Dados (Dashboard)</p>
+        <p class="filters-helper-text">Ligue um ou mais filtros para refinar os cards exibidos.</p>
+
+        <fieldset class="filters-fieldset">
+          <legend class="sr-only">Selecionar categorias de dados do dashboard</legend>
+
+          <label class="filter-label">
+            <input type="checkbox" data-dashboard-toggle value="diaristas" checked />
+            Diaristas
+          </label>
+
+          <label class="filter-label">
+            <input type="checkbox" data-dashboard-toggle value="contratantes" checked />
+            Contratantes
+          </label>
+
+          <label class="filter-label">
+            <input type="checkbox" data-dashboard-toggle value="pesquisa-local" checked />
+            Pesquisa Local
+          </label>
+        </fieldset>
+        <p class="filters-status" id="dashboard-filter-status" aria-live="polite"></p>
+      </section>
+
+      <section class="filters-section" aria-labelledby="filtros-titulo">
+        <p class="filters-heading" aria-hidden="true">Autores</p>
+
+        <p class="project-title">Lucas Gonçalves</p>
+        <p class="project-subtitle">Product Owner</p>
+
+        <p class="project-title">João Victor Rios</p>
+        <p class="project-subtitle">Desenvolvedor Full-stack</p>
+
+        <p class="project-title">Alexsander Motta</p>
+        <p class="project-subtitle">Analista de BI</p>
+
+        <p class="project-title">Beatriz Vasconcellos</p>
+        <p class="project-subtitle">Pesquisadora UX</p>
+        
+        <p class="project-title">Vinicius Inoue</p>
+        <p class="project-subtitle">Analista de Qualidade</p>
+      </section>
+
+      <div class="sidebar-footer">
+        <!-- Logo CEUB acessível em imagem) -->
+        <div class="ceub-logo" role="img" aria-label="CEUB – Centro Universitário de Brasília">
+          <img src="https://institucional.uniceub.br/hubfs/BrandCenter/img/logo-ceub-colorida-02.png" alt="Logo institucional UniCEUB" class="ceub-logo">
+        </div>
+
+        <!--
+          ACESSIBILIDADE: <button> nativo com aria-pressed
+          para o toggle de tema (estado declarado ao leitor de tela)
+        -->
+        <button
+          type="button"
+          class="btn-sidebar"
+          aria-pressed="false"
+          aria-label="Alternar entre tema claro e escuro"
+        >
+          <svg width="14" height="14" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          Theme Toggle
+        </button>
+
+        <!--
+          ACESSIBILIDADE: <button> nativo — substitui <div> estilizado
+          Prática: Fake Button → <button> semântico
+        -->
+        <button type="button" class="btn-export">
+          <svg width="13" height="13" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+          Export Report
+        </button>
+      </div>
+
+    </aside><!-- /aside.sidebar -->
+
+
+    <!-- ══════════════════════════════════════════
+         CONTEÚDO PRINCIPAL
+         HTML Semântico: <main> com id para skip link
+         e aria-labelledby vinculado ao <h1>
+    ═══════════════════════════════════════════ -->
+    <main id="conteudo-principal" class="main-content" aria-labelledby="titulo-dashboard" data-dashboard-root>
+
+      <!-- Cabeçalho do dashboard -->
+      <header class="dashboard-header">
+        <p class="dashboard-category">Trabalho Doméstico Informal</p>
+        <!--
+          ACESSIBILIDADE — Prática 1: H1 único por página.
+          Define o propósito central do documento.
+        -->
+        <h1 id="titulo-dashboard">Projeto Integrador I – UniCEUB</h1>
+      </header>
+
+
+      <!-- ─────────── LINHA 1: Informalidade + MEI ─────────── -->
+      <div class="dashboard-row">
+
+        <!-- ══ SEÇÃO: Taxa de Informalidade ══ -->
+        <section class="card card--wide dashboard-filter-card" data-filter-tags="diaristas,contratantes,pesquisa-local" aria-labelledby="h2-informalidade">
+          <header class="card-header">
+            <p class="card-category">Contexto de Mercado</p>
+            <!--
+              ACESSIBILIDADE — Prática 1: H2 para seção principal
+            -->
+            <h2 id="h2-informalidade">Taxa de Informalidade</h2>
+
+            <!--
+              ACESSIBILIDADE: ícone ⓘ como <button> nativo com aria-label
+              Não é um <div> decorativo — é interativo
+            -->
+            <button
+              type="button"
+              class="btn-info"
+              aria-label="Mais informações sobre Taxa de Informalidade"
+            >
+              <svg width="16" height="16" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </button>
+          </header>
+
+          <!--
+            ACESSIBILIDADE — Prática 4: Gráficos com alternativa textual
+            <figure> + SVG com role="img" e <title> interno
+            Tabela oculta visualmente fornece dados estruturados
+          -->
+          <div class="charts-row">
+
+            <!-- Gráfico 1: 31,5% Geral -->
+            <figure class="donut-figure">
+              <div class="chart-container chart-container--donut">
+                <canvas id="chart-informalidade-geral" aria-hidden="true">
+                  Gráfico de rosca: 31,5% da força de trabalho nacional está em regime informal.
+                </canvas>
+              </div>
+
+              <figcaption>
+                Representação da força de trabalho nacional em regimes informais.
+              </figcaption>
+
+              <!-- Tabela de dados: acessível via sr-only -->
+              <table class="sr-only">
+                <caption>Taxa de informalidade geral no mercado de trabalho nacional</caption>
+                <thead><tr><th scope="col">Regime</th><th scope="col">Percentual</th></tr></thead>
+                <tbody>
+                  <tr><td>Informal</td><td>31,5%</td></tr>
+                  <tr><td>Formal</td><td>68,5%</td></tr>
+                </tbody>
+              </table>
+            </figure>
+
+            <!-- Gráfico 2: 75% Doméstico -->
+            <figure class="donut-figure">
+              <div class="chart-container chart-container--donut">
+                <canvas id="chart-informalidade-domestico" aria-hidden="true">
+                  Gráfico de rosca: 75% dos trabalhadores domésticos estão em regime informal.
+                </canvas>
+              </div>
+
+              <figcaption>
+                A informalidade atinge níveis críticos no setor de trabalho doméstico.
+              </figcaption>
+
+              <table class="sr-only">
+                <caption>Taxa de informalidade no setor de trabalho doméstico</caption>
+                <thead><tr><th scope="col">Regime</th><th scope="col">Percentual</th></tr></thead>
+                <tbody>
+                  <tr><td>Informal</td><td>75%</td></tr>
+                  <tr><td>Formal</td><td>25%</td></tr>
+                </tbody>
+              </table>
+            </figure>
+
+          </div><!-- /charts-row -->
+        </section><!-- /Taxa de Informalidade -->
+
+
+        <!-- ══ SEÇÃO: Status MEI ══ -->
+        <section class="card card--narrow dashboard-filter-card" data-filter-tags="diaristas,pesquisa-local" aria-labelledby="h2-mei">
+          <header class="card-header">
+            <p class="card-category">Status Legal</p>
+            <h2 id="h2-mei">Status MEI</h2>
+          </header>
+
+          <!--
+            ACESSIBILIDADE — Prática 2 + 4:
+            Gráfico com SVG acessível (role="img", <title>)
+            Legenda como tabela de dados estruturados
+            Pontos de cor com aria-hidden (cor não é o único identificador)
+          -->
+          <figure class="mei-figure" aria-labelledby="titulo-mei-chart">
+            <div class="chart-container chart-container--mei">
+              <canvas id="chart-mei" aria-hidden="true">
+                Gráfico de rosca: Status MEI — 62% não possui, 28% possui, 10% já teve.
+              </canvas>
+            </div>
+
+            <figcaption>
+              <!--
+                ACESSIBILIDADE — Prática 2: <table> para dados tabulares
+                Cabeçalhos com <th scope="col"> identificam colunas
+              -->
+              <table class="mei-table" aria-label="Distribuição do Status MEI entre os trabalhadores pesquisados">
+                <caption class="sr-only">
+                  Status MEI: parcela dos trabalhadores domésticos informais que possuem, não possuem ou já possuíram registro como Microempreendedor Individual.
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Status</th>
+                    <th scope="col">%</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <!--
+                      ACESSIBILIDADE: aria-hidden nos quadrados de cor.
+                      A informação é transmitida pelo texto, não só pela cor.
+                    -->
+                    <td>
+                      <span class="legend-dot" style="background:#1a5fa8" aria-hidden="true"></span>
+                      Não Possui
+                    </td>
+                    <td>62%</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="legend-dot" style="background:#b8cee8" aria-hidden="true"></span>
+                      Possui
+                    </td>
+                    <td>28%</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="legend-dot" style="background:#dce8f5;border:1px solid #b8cee8" aria-hidden="true"></span>
+                      Já Teve
+                    </td>
+                    <td>10%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </figcaption>
+          </figure>
+        </section><!-- /Status MEI -->
+
+      </div><!-- /Linha 1 -->
+
+
+      <!-- ─────────── LINHA 2: Qualidade + Preocupações ─────────── -->
+      <div class="dashboard-row dashboard-row--equal">
+
+        <!-- ══ SEÇÃO: Qualidade do Trabalho ══ -->
+        <section class="card dashboard-filter-card" data-filter-tags="diaristas,contratantes" aria-labelledby="h2-qualidade">
+          <header class="card-header">
+            <p class="card-category">Análise Comparativa</p>
+            <h2 id="h2-qualidade">Qualidade do Trabalho</h2>
+          </header>
+
+          <div class="quality-metrics">
+
+            <!-- Horas Semanais -->
+            <div>
+              <!--
+                ACESSIBILIDADE — Prática 1: H3 para subseção
+                dentro da seção H2 "Qualidade do Trabalho"
+              -->
+              <h3 class="metric-title">
+                <svg width="14" height="14" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Horas Semanais
+              </h3>
+              <div class="chart-container chart-container--bar-h">
+                <canvas id="chart-horas" aria-hidden="true">
+                  Gráfico de barras: Formal 30h/semana, Informal 40h/semana.
+                </canvas>
+              </div>
+              <dl class="sr-only">
+                <div><dt>Formal</dt><dd>30h/semana</dd></div>
+                <div><dt>Informal</dt><dd>40h/semana</dd></div>
+              </dl>
+            </div>
+
+            <!-- Salário Mensal -->
+            <div>
+              <h3 class="metric-title">
+                <svg width="14" height="14" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                Salário Mensal
+              </h3>
+              <div class="chart-container chart-container--bar-h">
+                <canvas id="chart-salario" aria-hidden="true">
+                  Gráfico de barras: Formal R$ 2.450, Informal R$ 1.120.
+                </canvas>
+              </div>
+              <dl class="sr-only">
+                <div><dt>Formal</dt><dd>R$ 2.450</dd></div>
+                <div><dt>Informal</dt><dd>R$ 1.120</dd></div>
+              </dl>
+            </div>
+
+          </div><!-- /quality-metrics -->
+        </section><!-- /Qualidade do Trabalho -->
+
+
+        <!-- ══ SEÇÃO: Preocupações ══ -->
+        <section class="card dashboard-filter-card" data-filter-tags="contratantes,pesquisa-local" aria-labelledby="h2-preocupacoes">
+          <header class="card-header">
+            <p class="card-category">Método da Empatia</p>
+            <h2 id="h2-preocupacoes">Preocupações</h2>
+          </header>
+
+          <!--
+            ACESSIBILIDADE — PROBLEMA CORRIGIDO:
+            O design original usa nuvem de palavras onde o tamanho
+            da fonte indica a frequência/importância do tema.
+            PROBLEMA: leitores de tela não percebem diferença de tamanho.
+            SOLUÇÃO: <ul> semântica — cada preocupação é um <li>.
+            O estilo visual (tamanho) é mantido com classes CSS,
+            mas o conteúdo é plenamente acessível via texto.
+          -->
+          <ul
+            class="concerns-list"
+            aria-label="Principais preocupações identificadas entre trabalhadores domésticos informais"
+          >
+            <li class="concern concern--xl">MEDO</li>
+            <li class="concern concern--xl concern--accent">CONFIANÇA</li>
+            <li class="concern concern--lg">VALOR</li>
+            <li class="concern concern--xl">SEGURANÇA</li>
+            <li class="concern concern--md">TRANSPORTE</li>
+            <li class="concern concern--lg concern--accent">PREÇO</li>
+            <li class="concern concern--sm">ESTABILIDADE</li>
+            <li class="concern concern--md concern--accent">SAÚDE</li>
+          </ul>
+        </section><!-- /Preocupações -->
+
+      </div><!-- /Linha 2 -->
+
+
+      <!-- ─────────── LINHA 3: Canal de Aquisição ─────────── -->
+      <section class="card card--full dashboard-filter-card" data-filter-tags="diaristas,contratantes,pesquisa-local" aria-labelledby="h2-canal">
+        <div class="canal-grid">
+
+          <div class="canal-text">
+            <header class="card-header">
+              <p class="card-category">Cenário Obsoleto</p>
+              <h2 id="h2-canal">Canal de Aquisição</h2>
+            </header>
+            <p>
+              O mercado doméstico é movido quase exclusivamente pela reputação pessoal.
+              A indicação direta domina o cenário de contratação, superando plataformas digitais.
+            </p>
+
+            <!--
+              HTML Semântico: <dl> para pares estatísticos
+            -->
+            <dl class="canal-stats">
+              <div>
+                <dt>Indicação</dt>
+                <dd>85.7%</dd>
+              </div>
+              <div>
+                <dt>Outros</dt>
+                <dd>14.3%</dd>
+              </div>
+            </dl>
+          </div>
+
+          <!--
+            ACESSIBILIDADE — Prática 4:
+            Gráfico de barras com <figure>, SVG role="img" e <title>
+            Tabela de dados oculta (sr-only) para leitores de tela
+          -->
+          <figure aria-labelledby="titulo-canal-chart">
+            <div class="chart-container chart-container--bar-v">
+              <canvas id="chart-canal" aria-hidden="true">
+                Gráfico de barras: Canais de aquisição de clientes — Indicação 85,7% e Outros 14,3%.
+              </canvas>
+            </div>
+
+            <!-- Tabela oculta para leitores de tela -->
+            <table class="sr-only">
+              <caption>Canal de aquisição de clientes para trabalhadores domésticos informais</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Canal</th>
+                  <th scope="col">Percentual</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Indicação (boca a boca / reputação pessoal)</td><td>85,7%</td></tr>
+                <tr><td>Outros meios (plataformas digitais e afins)</td><td>14,3%</td></tr>
+              </tbody>
+            </table>
+
+            <figcaption class="sr-only" id="titulo-canal-chart">
+              Gráfico mostrando que 85,7% das contratações de trabalhadores domésticos ocorrem por indicação
+              direta, enquanto apenas 14,3% ocorrem por outros meios.
+            </figcaption>
+          </figure>
+
+        </div><!-- /canal-grid -->
+      </section><!-- /Canal de Aquisição -->
+
+
+      <!-- ══════════════════════════════════════════
+           RODAPÉ
+           HTML Semântico: <footer> dentro de <main>
+      ═══════════════════════════════════════════ -->
+<footer class="site-footer" aria-label="Rodapé do site">
+
+  <div class="footer-grid">
+
+    <!-- Coluna 1: Identidade do Projeto e Instituição -->
+    <div class="footer-brand">
+      <img
+        class="footer-ceub-logo"
+        src="https://institucional.uniceub.br/hubfs/BrandCenter/img/logo-ceub-colorida-02.png"
+        alt="Logo institucional UniCEUB – Centro Universitário de Brasília"
+      >
+      <p class="footer-project-name">Dashboard — Trabalho Doméstico Informal</p>
+      <p class="footer-institution">
+        Centro Universitário de Brasília · Ciência da Computação<br>
+        Orientação: Profa. Kadidja Valéria
+      </p>
+      <span class="footer-badge" aria-label="Projeto Integrador I">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M2 20h20M6 20V10l6-8 6 8v10"/></svg>
+        Projeto Integrador I
+      </span>
+      <p class="footer-data-note">
+        Dados compilados da PNAD Contínua — IBGE &amp; Pesquisa de Campo Local 2026.
+        Todos os direitos reservados.
+      </p>
+    </div>
+
+    <!-- Coluna 2: Repositórios -->
+    <div class="footer-col">
+      <p class="footer-col-heading">Repositórios</p>
+      <ul class="footer-link-list">
+        <li>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77A5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          <a href="https://github.com/Lucas-Balduino/ProjetoIntegrador">Projeto Integrador</a>
+        </li>
+        <li>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77A5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          <a href="https://github.com/Lucas-Balduino/AvaliacaoIHC">Atividades IHC</a>
+        </li>
+        <li>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          <a href="https://github.com/Lucas-Balduino">github.com/Lucas-Balduino</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Coluna 3: Navegação + Autor -->
+    <div class="footer-col">
+      <p class="footer-col-heading">Navegação</p>
+      <ul class="footer-link-list">
+        <li>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          <a href="index.html">Dashboard</a>
+        </li>
+        <li>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <a href="sobre.html">Sobre o Projeto</a>
+        </li>
+        <li>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 10h8M8 14h4"/></svg>
+          <a href="formularios.html">Formulários</a>
+        </li>
+      </ul>
+
+      <p class="footer-col-heading" style="margin-top: 20px;">Autor</p>
+      <ul class="footer-link-list">
+        <li>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="footer-link-icon"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span class="footer-author-name">Lucas Gonçalves Balduino</span>
+        </li>
+      </ul>
+    </div>
+
+  </div><!-- /footer-grid -->
+
+  <hr class="footer-divider" aria-hidden="true">
+
+  <div class="footer-bottom">
+    <p class="footer-copyright">
+      © 2026 Projeto Integrador I — UniCEUB · Ciência da Computação. Todos os direitos reservados.
+    </p>
+    <span class="footer-ods-badge" aria-label="Alinhado ao ODS 8 da ONU: Trabalho Decente e Crescimento Econômico">
+      <span class="footer-ods-dot" aria-hidden="true"></span>
+      ODS 8 — Trabalho Decente e Crescimento Econômico
+    </span>
+  </div>
+
+</footer>
+
+
+    </main><!-- /main#conteudo-principal -->
+
+  </div><!-- /layout -->
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="script.js" defer></script>
+</body>
+</html>
